@@ -44,22 +44,11 @@ public class Greedy {
 	}
 	
 	
-	public int getMaxEnd(ArrayList<Job> jobs){
-		int maxEnd = jobs.get(0).end;
-		for(int i=0; i<jobs.size(); i++){
-			if(jobs.get(i).end > maxEnd) {
-				maxEnd = jobs.get(i).end;
-			}
-		}
-		
-		return maxEnd;
-	}
-	
 	public ArrayList<Job> executeLinear(ArrayList<Job> sortedJobs, Machine machine){
 		ArrayList<Job> solution = new ArrayList<Job>();
 		Stack<Job> jobStack = new Stack<Job>();
 		
-		int maxTimeEnd = this.getMaxEnd(sortedJobs);
+		int maxTimeEnd = Commun.getMaxEnd(sortedJobs);
 		int[][] resourceConsumed = new int[machine.resources.size()][maxTimeEnd];
 		
 		ArrayList<Job> jobSet = new ArrayList<Job>();
@@ -143,7 +132,7 @@ public class Greedy {
 		ArrayList<Job> solution = new ArrayList<Job>();
 		Stack<Job> jobStack = new Stack<Job>();
 		
-		int maxTimeEnd = this.getMaxEnd(sortedJobs);
+		int maxTimeEnd = Commun.getMaxEnd(sortedJobs);
 		int[][] resourceConsumed = new int[machine.resources.size()][maxTimeEnd];
 		
 		ArrayList<Job> jobSet = new ArrayList<Job>();

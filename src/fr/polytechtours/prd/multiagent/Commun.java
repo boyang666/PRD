@@ -11,8 +11,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 
+ * This class propose the common methods for the general use
+ * 
+ * Specially, the method for creating jobs and saving to files, 
+ * the method for reading jobs from files,
+ * the method for getting the end time maximum of a sequence of jobs
+ * 
+ * @author Boyang Wang
+ * @version 1.0
+ *
+ */
 public class Commun {
 	
+	/**
+	 * Method used to get the end time maximum of a sequence of jobs sorted
+	 * 
+	 * @param jobs a list of jobs
+	 * @return end time max of a sequence of jobs
+	 */
 	public static int getMaxEnd(ArrayList<Job> jobs){
 		int maxEnd = jobs.get(0).end;
 		for(int i=0; i<jobs.size(); i++){
@@ -24,6 +42,18 @@ public class Commun {
 		return maxEnd;
 	}
 	
+	/**
+	 * Method to create random jobs and to save a file
+	 * The total amount of each resource is fixed to 1000
+	 * Each consumption of resource is set randomly between 1 and 1000
+	 * Each start time is set randomly between 1 and 1440 mns (one day)
+	 * Each end time is set randomly between s+1 and 1440-s
+	 * 
+	 * @param nbJobs total number of jobs
+	 * @param nbResouorces total number of resources
+	 * @param percJobAgentA percentage of jobs which belongs to agent A
+	 * @param filename file name to save jobs
+	 */
 	public static void createRandomJobsAndResources(int nbJobs, int nbResouorces, int percJobAgentA, String filename){
 		ArrayList<Job> jobs = new ArrayList<Job>();
 		Machine machine = new Machine();
@@ -35,11 +65,11 @@ public class Commun {
 		for(int i=0 ;i<nbJobs; i++){
 			Job job = new Job();
 			job.id = i;
-			job.start = random.nextInt(24);
-			if(job.start == 23)
-				job.end = 24;
+			job.start = random.nextInt(1440);
+			if(job.start == 1439)
+				job.end = 1440;
 			else
-				job.end = job.start + 1 + random.nextInt((24 - job.start - 1));
+				job.end = job.start + 1 + random.nextInt((1440 - job.start - 1));
 			for(int j=0; j<nbResouorces; j++){
 				job.consumes.add(1 + random.nextInt(1000));
 			}
@@ -71,16 +101,29 @@ public class Commun {
 			}
 			bw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public static HashMap<String, Object> ReadDataFromFile(String fileName){
+	/**
+	 * Read from a file to load all the jobs saved in this file
+	 * 
+	 * The result to return is of type the HashMap: 
+	 * the keys are machine, jobs which are related to a machine and a list of jobs, 
+	 * numJob for number of job, numResource for number of resources,
+	 * numJobAgentA for number of job of agent A
+	 * 
+	 * @param fileName name of file to read
+	 * @param typeOfSort the type of sorting
+	 * @see fr.polytechtours.prd.multiagent.Job
+	 * @return a HashMap with a machine (key:machine) and a list of jobs (key:jobs)
+	 */
+	public static HashMap<String, Object> ReadDataFromFile(String fileName, int typeOfSort){
 		
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		
 		try {
+			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new FileReader(fileName));
 			String line = null;
 			
@@ -113,13 +156,12 @@ public class Commun {
                 	job.consumes.add(Integer.parseInt(item[i+4]));
                 }
                 job.weight = 1;
-                job.calculateFactorOfSort();
+                job.calculateFactorOfSort(typeOfSort);
                 jobs.add(job);
             }
             result.put("jobs", jobs);
             
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

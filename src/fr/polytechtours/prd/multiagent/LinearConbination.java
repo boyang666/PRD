@@ -2,8 +2,6 @@ package fr.polytechtours.prd.multiagent;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import ilog.concert.IloException;
 import ilog.concert.IloIntExpr;
 import ilog.concert.IloIntVar;
@@ -22,15 +20,15 @@ public class LinearConbination {
 		}
 	}
 
-	public void execute(){
-		HashMap<String, Object> data = Commun.ReadDataFromFile("instance-10-2-3-40.data");
+	public void execute(ArrayList<Job> jobs, Machine machine, double weight){
+		/*HashMap<String, Object> data = Commun.ReadDataFromFile("instance-10-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
 		ArrayList<Job> jobs = (ArrayList<Job>) data.get("jobs");
-		Machine machine = (Machine) data.get("machine");
+		Machine machine = (Machine) data.get("machine");*/
 		
-		Greedy greedy = new Greedy();
-		int T = greedy.getMaxEnd(jobs);
 		
-		this.initialWeight(jobs, 0.1);
+		int T = Commun.getMaxEnd(jobs);
+		
+		this.initialWeight(jobs, weight);
 		
 		try {
 			IloCplex cplex = new IloCplex();
