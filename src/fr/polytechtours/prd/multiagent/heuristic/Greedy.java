@@ -1,9 +1,12 @@
-package fr.polytechtours.prd.multiagent;
+package fr.polytechtours.prd.multiagent.heuristic;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Stack;
+
+import fr.polytechtours.prd.multiagent.model.Job;
+import fr.polytechtours.prd.multiagent.model.Machine;
+import fr.polytechtours.prd.multiagent.util.Commun;
 
 
 public class Greedy {

@@ -1,4 +1,4 @@
-package fr.polytechtours.prd.multiagent;
+package fr.polytechtours.prd.multiagent.model;
 
 import java.util.ArrayList;
 

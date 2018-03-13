@@ -1,4 +1,4 @@
-package fr.polytechtours.prd.multiagent;
+package fr.polytechtours.prd.multiagent.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
+import fr.polytechtours.prd.multiagent.model.Job;
+import fr.polytechtours.prd.multiagent.model.Machine;
 
 /**
  * 
@@ -115,7 +118,7 @@ public class Commun {
 	 * 
 	 * @param fileName name of file to read
 	 * @param typeOfSort the type of sorting
-	 * @see fr.polytechtours.prd.multiagent.Job
+	 * @see fr.polytechtours.prd.multiagent.model.Job
 	 * @return a HashMap with a machine (key:machine) and a list of jobs (key:jobs)
 	 */
 	public static HashMap<String, Object> ReadDataFromFile(String fileName, int typeOfSort){

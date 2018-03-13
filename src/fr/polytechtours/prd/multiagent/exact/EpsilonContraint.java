@@ -1,11 +1,12 @@
-package fr.polytechtours.prd.multiagent;
+package fr.polytechtours.prd.multiagent.exact;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.xml.transform.Result;
-
+import fr.polytechtours.prd.multiagent.model.Job;
+import fr.polytechtours.prd.multiagent.model.Machine;
+import fr.polytechtours.prd.multiagent.util.Commun;
 import ilog.concert.IloException;
 import ilog.concert.IloIntExpr;
 import ilog.concert.IloIntVar;

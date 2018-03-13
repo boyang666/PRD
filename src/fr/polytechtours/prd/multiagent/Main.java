@@ -3,11 +3,18 @@ package fr.polytechtours.prd.multiagent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import fr.polytechtours.prd.multiagent.exact.EpsilonContraint;
+import fr.polytechtours.prd.multiagent.heuristic.Greedy;
+import fr.polytechtours.prd.multiagent.model.Job;
+import fr.polytechtours.prd.multiagent.model.Machine;
+import fr.polytechtours.prd.multiagent.util.Commun;
+
 public class Main {
 
 	public static void main(String[] args) {
 		//Commun.createRandomJobsAndResources(100, 3, 40, "instance-100-2-3-40.data");
 		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-100-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
+		@SuppressWarnings("unchecked")
 		ArrayList<Job> jobs = (ArrayList<Job>) hashmap.get("jobs");
 		Machine machine = (Machine)hashmap.get("machine");
 		int nbJobs = (int) hashmap.get("numJob");
@@ -42,7 +49,7 @@ public class Main {
 		
 		Greedy greedy = new Greedy();
 		ArrayList<Job> sortedJobs = greedy.sortEpsilon(jobs);
-		int epsilon = 30;
+		int epsilon = 38;
 		ArrayList<Job> solution = greedy.executeEpsilon(sortedJobs, nbJobsA, machine, epsilon);
 		int obj_v_A = 0;
 		int obj_v_B = 0;

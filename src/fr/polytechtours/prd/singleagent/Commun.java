@@ -63,6 +63,7 @@ public class Commun {
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		
 		try {
+			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new FileReader(fileName));
 			String line = null;
 			
