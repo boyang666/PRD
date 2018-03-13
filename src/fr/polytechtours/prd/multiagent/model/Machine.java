@@ -8,7 +8,8 @@ import java.util.ArrayList;
  * 
  * @author Boyang Wang
  * @version 1.0
- *
+ * @since Nov 30, 2017
+ * 
  */
 public class Machine {
 

@@ -24,7 +24,8 @@ import fr.polytechtours.prd.multiagent.model.Machine;
  * 
  * @author Boyang Wang
  * @version 1.0
- *
+ * @since Nov 30, 2017
+ * 
  */
 public class Commun {
 	

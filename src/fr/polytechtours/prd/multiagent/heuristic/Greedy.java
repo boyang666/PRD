@@ -8,9 +8,30 @@ import fr.polytechtours.prd.multiagent.model.Job;
 import fr.polytechtours.prd.multiagent.model.Machine;
 import fr.polytechtours.prd.multiagent.util.Commun;
 
-
+/**
+ * 
+ * Greedy Heuristic for solving the multi-objectif problem.</br>
+ * Two types of execution are implemented:
+ * <ol>
+ * <li>to execute the greedy algorithm as the linear combination</li>
+ * <li>to execute the greedy algorithm as the epsilon constraint</li>
+ * </ol>
+ * User is responsible to choose one of the two types to run the algorithm.
+ * 
+ * @author Boyang Wang
+ * @version 1.0
+ * @since Feb 10, 2018
+ *
+ */
 public class Greedy {
 
+	/**
+	 * sort the jobs as linear combination algorithm
+	 * 
+	 * @param jobs list of jobs
+	 * @param lambda weight of jobs of agent A
+	 * @return list of jobs sorted
+	 */
 	public ArrayList<Job> sortLinear(ArrayList<Job> jobs, double lambda){
 		ArrayList<Job> jobsGreedy = new ArrayList<Job>();
 		jobsGreedy.addAll(jobs);
@@ -24,6 +45,12 @@ public class Greedy {
 		return jobsGreedy;
 	}
 	
+	/**
+	 * sort jobs as Epsilon Constraint algorithm</br>
+	 * For each agent, their jobs are sorted just among their range
+	 * @param jobs list of jobs
+	 * @return jobs sorted
+	 */
 	public ArrayList<Job> sortEpsilon(ArrayList<Job> jobs){
 		ArrayList<Job> jobsGreedy = new ArrayList<Job>();
 		jobsGreedy.addAll(jobs);
@@ -46,7 +73,12 @@ public class Greedy {
 		return jobsGreedy;
 	}
 	
-	
+	/**
+	 * to execute the greedy as the linear combination
+	 * @param sortedJobs list of jobs sorted by way of linear combination
+	 * @param machine machine with resources
+	 * @return list of jobs scheduled
+	 */
 	public ArrayList<Job> executeLinear(ArrayList<Job> sortedJobs, Machine machine){
 		ArrayList<Job> solution = new ArrayList<Job>();
 		Stack<Job> jobStack = new Stack<Job>();
@@ -131,6 +163,15 @@ public class Greedy {
 		return solution;
 	}
 	
+	/**
+	 * to execute the greedy as Epsilon Constraint algorithm</br>
+	 * 
+	 * @param sortedJobs jobs are sorted by way of Epsilon Constraint
+	 * @param nbJobsA number of jobs
+	 * @param machine machine with resources
+	 * @param epsilon value of epsilon
+	 * @return list of jobs scheduled
+	 */
 	public ArrayList<Job> executeEpsilon(ArrayList<Job> sortedJobs, int nbJobsA, Machine machine, int epsilon){
 		ArrayList<Job> solution = new ArrayList<Job>();
 		Stack<Job> jobStack = new Stack<Job>();

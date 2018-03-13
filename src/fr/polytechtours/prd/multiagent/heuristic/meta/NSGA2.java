@@ -6,6 +6,13 @@ import java.util.Random;
 import fr.polytechtours.prd.multiagent.heuristic.Greedy;
 import fr.polytechtours.prd.multiagent.model.Job;
 
+/**
+ * This class provides the main loop and several global methods for NSGA2.</br> 
+ * @author Boyang Wang
+ * @version 1.0
+ * @since Mars 10, 2018
+ *
+ */
 public class NSGA2 {
 	
 	public ArrayList<Integer> initByGreedy(int epsilon){
@@ -110,6 +117,11 @@ public class NSGA2 {
 		return group;
 	}
 	
+	/**
+	 * selection operation to select one individual to attend the crossover
+	 * @param pop population
+	 * @return index of individual chosen
+	 */
 	public int selection(ArrayList<Individual> pop){
 		Random random = new Random();
 		int p = random.nextInt(pop.size());
@@ -130,6 +142,12 @@ public class NSGA2 {
 		}
 	}
 	
+	/**
+	 * crossover operation to create new children
+	 * @param dad dad individual
+	 * @param mum mom individual
+	 * @return two children created by crossover
+	 */
 	public Individual[] crossOver(Individual dad, Individual mum){
 		Random random = new Random();
 		Individual[] children = new Individual[2];
@@ -150,31 +168,42 @@ public class NSGA2 {
 			}
 		}
 		
+		//to calculate their values of objective functions
 		children[0].calculateValueObj();
 		children[1].calculateValueObj();
 		
 		return children;
 	}
 	
+	/**
+	 * Mutation operation
+	 * @param children children created after crossover
+	 * @return children after mutation
+	 */
 	public Individual[] mutation(Individual[] children){
 		Random random = new Random();
 		
 		for(int index=0; index<2; index++){
 			int pos = random.nextInt(children[0].genes.size());
-			if(children[index].genes.get(pos) == 1){
+			if(children[index].genes.get(pos) == 1 && random.nextDouble() < Constant.PROB_MUTATION){
 				children[index].genes.set(pos, 0);
-			}else //if(random.nextDouble() < Constant.PROB_MUTATION)
+			}else if(random.nextDouble() < Constant.PROB_MUTATION)
 				children[index].genes.set(pos, 1);
 		
 			children[index].calculateValueObj();
 		}
 		
-		
+		// to verify the children's feasibility
 		children[0].validate();
 		children[1].validate();
 		return children;
 	}
 	
+	/**
+	 * remove the duplicate individuals from the population
+	 * @param pop population
+	 * @return population without duplicate
+	 */
 	public ArrayList<Individual> removeDuplicateFromArray(ArrayList<Individual> pop){
 		for (int i = 0; i < pop.size() - 1; i++) {
 			for (int j = pop.size() - 1; j > i; j--) {
@@ -186,6 +215,11 @@ public class NSGA2 {
 		return pop;
 	}
 	
+	/**
+	 * print the result to console
+	 * @param pop population
+	 * @param generation number of iteration
+	 */
 	public void outputInd(ArrayList<Individual> pop, String generation){
 		for(Individual ind : pop){
 			StringBuilder str = new StringBuilder("");
@@ -198,6 +232,18 @@ public class NSGA2 {
 		System.out.println(generation + " finish");
 	}
 	
+	/**
+	 * Main loop for NSGA2</br>
+	 * The algorithm consists these steps:
+	 * <ol>
+	 * <li>Initiation of population</li>
+	 * <li>Crossover, mutation</li>
+	 * <li>Construct non dominated sets</li>
+	 * <li>Calculate crowded distances</li>
+	 * <li>Reconstruct the population£¬ if iteration not end, go to 2</li>
+	 * </ol>
+	 * @return better solution found by NSGA2
+	 */
 	public ArrayList<Individual> execute() {
 		Random random = new Random();
 		

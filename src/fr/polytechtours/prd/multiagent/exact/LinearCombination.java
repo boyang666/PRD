@@ -11,24 +11,44 @@ import ilog.concert.IloIntExpr;
 import ilog.concert.IloIntVar;
 import ilog.cplex.IloCplex;
 
-
-public class LinearConbination {
+/**
+ * Implementation of algorithm Linear Combination </br>
+ * This algorithm is an exact method to solve the multi-objectifs problems</br>
+ * To solve the problem, we use the library of CPLEX as the solver.</br>
+ * We need to change the coefficient to get the pareto front.</br>
+ * This method is not as good as {@link EpsilonConstraint}. 
+ * 
+ * @author Boyang Wang
+ * @version 1.0
+ * @since Feb 1, 2018
+ *
+ */
+public class LinearCombination {
 	
+	/**
+	 * Function to initial the weight for the jobs of agent A and agent B
+	 * 
+	 * @param jobs list of jobs
+	 * @param valA coefficient of jobs for agent A
+	 */
 	public void initialWeight(ArrayList<Job> jobs, double valA){
 		for(int i=0; i<jobs.size(); i++){
-			if(jobs.get(i).belongTo.equals("A")){
+			if(jobs.get(i).belongTo.equals("A")){// for jobs of agent A
 				jobs.get(i).weight = valA;
 			}
-			else
+			else // for jobs of agent B
 				jobs.get(i).weight = 1-valA;
 		}
 	}
 
+	/**
+	 * Function to execute the linear combination algorithm
+	 * 
+	 * @param jobs list of jobs
+	 * @param machine machine with resources
+	 * @param weight weight for jobs of agent A
+	 */
 	public void execute(ArrayList<Job> jobs, Machine machine, double weight){
-		/*HashMap<String, Object> data = Commun.ReadDataFromFile("instance-10-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
-		ArrayList<Job> jobs = (ArrayList<Job>) data.get("jobs");
-		Machine machine = (Machine) data.get("machine");*/
-		
 		
 		int T = Commun.getMaxEnd(jobs);
 		
@@ -89,7 +109,6 @@ public class LinearConbination {
             cplex.end();  
             
 		} catch (IloException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

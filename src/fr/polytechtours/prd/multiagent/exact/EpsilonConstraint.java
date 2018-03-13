@@ -12,29 +12,55 @@ import ilog.concert.IloIntExpr;
 import ilog.concert.IloIntVar;
 import ilog.cplex.IloCplex;
 
-public class EpsilonContraint {
+/**
+ * Implementation of algorithm Epsilon Constraint </br>
+ * This algorithm is an exact method to solve the multi-objectifs problems</br>
+ * To solve the problem, we use the library of CPLEX as the solver.</br>
+ * In order to get the optimal pareto front, we need to solve the symmetric problem  
+ * 
+ * @author Boyang Wang
+ * @version 1.0
+ * @since Jan 1, 2018
+ *
+ */
+public class EpsilonConstraint {
 
+	/**
+	 * Function to execute the algorithm Epsilon Constraint</br>
+	 * We use CPLEX to solve the problem
+	 * 
+	 * @param epsilon epsilon to import
+	 * @param jobs list of jobs
+	 * @param machine available machine with resources
+	 * @param nbJobs number of jobs
+	 * @param nbJobsA number of jobs of agent A
+	 * @param agent which agent to consider as the constraint
+	 * @return a hashmap with keys as :
+	 * <ul>
+	 * <li>"solved" : boolean, whether the problem has been solved</li>
+	 * <li>"obj_value" : int, optimal value of the objectif function</li>
+	 * <li>"epsilon" : int, value of epsilon</li>
+	 * <li>"result_x" : int[], sequence of result</li>
+	 * </ul>
+	 */
 	public HashMap<String, Object> execute(int epsilon, ArrayList<Job> jobs, Machine machine, int nbJobs, int nbJobsA, String agent){
-		/*HashMap<String, Object> data = Commun.ReadDataFromFile("instance-100-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
-		@SuppressWarnings("unchecked")
-		ArrayList<Job> jobs = (ArrayList<Job>) data.get("jobs");
-		Machine machine = (Machine) data.get("machine");
-		int nbJobs = (int) data.get("numJob");
-		int nbJobsA = (int) data.get("numJobAgentA");*/
 		
+		//initiation of variables
 		boolean solved = false;
-		int T = Commun.getMaxEnd(jobs);
 		HashMap<String, Object> results = new HashMap<String, Object>();
+		
+		//get the max end time of all jobs
+		int T = Commun.getMaxEnd(jobs);
 		
 		
 		try {
+			//initiation of cplex object
 			IloCplex cplex = new IloCplex();
-			
-			//IloIntVar[] x_A = cplex.boolVarArray(nbJobsA);
-			//IloIntVar[] x_B = cplex.boolVarArray(nbJobsB);
 		
+			//initiation of x as 0 for scheduled and 1 for not scheduled
 			IloIntVar[] x = cplex.boolVarArray(jobs.size());
 			
+			//initiation of coefficient as 0 for jobs of agent on parameter and 1 for other jobs
 			int[] objvals = new int[jobs.size()];
 			for(int i=0; i<jobs.size(); i++){
 				if(jobs.get(i).belongTo.equals(agent))
@@ -42,8 +68,11 @@ public class EpsilonContraint {
 				else
 					objvals[i] = 1;
 			}
+			
+			//add object function
 			cplex.addMinimize(cplex.scalProd(x, objvals));
 			
+			//initiation of temporary variables
 			IloIntExpr[][] y = new IloIntExpr[jobs.size()][T];
 			for(int i=0; i<jobs.size(); i++){
 				for(int t=0; t<T; t++){
@@ -51,6 +80,7 @@ public class EpsilonContraint {
 				}
 			}
 			
+			//add constraint to cplex
 			int[] convals = new int[jobs.size()];
 			for(int i=0; i<jobs.size(); i++){
 				if(jobs.get(i).belongTo.equals(agent))
@@ -60,6 +90,7 @@ public class EpsilonContraint {
 			}
 			cplex.addEq(cplex.scalProd(x, convals), epsilon);
 			
+			//add constraint to cplex
 			for(int i=0; i<jobs.size(); i++){
 				IloIntExpr Y = cplex.intExpr() ;
 				for(int t=jobs.get(i).start; t<jobs.get(i).end; t++){
@@ -70,7 +101,7 @@ public class EpsilonContraint {
 				cplex.addEq(Y, cplex.prod((jobs.get(i).end - jobs.get(i).start),(cplex.diff(1, x[i]))));
 			}
 			
-			
+			//add constraint to cplex
 			for(int j=0; j<machine.resources.size(); j++){
 				for(int t=0; t<T; t++){
 					IloIntExpr Y2 = cplex.intExpr() ;
@@ -82,35 +113,38 @@ public class EpsilonContraint {
 				}
 			}
 			
+			//close cplex's output
 			cplex.setOut(null);
 			
-			if (cplex.solve()) {  
-                //cplex.output().println("Solution status = " + cplex.getStatus());  
-                //cplex.output().println("Solution value = " + new BigDecimal(cplex.getObjValue()).setScale(0, BigDecimal.ROUND_HALF_UP));  
+			//call cplex to solve the problem
+			if (cplex.solve()) {  // if the problem con be solved
+				
+				// optimal value of function
                 int obj_f = new BigDecimal(cplex.getObjValue()).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+                
+                // get the sequence of solution
                 double[] val = cplex.getValues(x);  
                 int[] result_x = new int[val.length];
                 for (int j = 0; j < val.length; j++){
-                	result_x[j] = new BigDecimal(val[j]).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
-                	//cplex.output().println("x" + j + "  = " + result_x[j]);  
+                	result_x[j] = new BigDecimal(val[j]).setScale(0, BigDecimal.ROUND_HALF_UP).intValue(); 
                 }
                 
-                
+                //set solved to true
                 solved = true;	
                 
+                //add all elements to hashmap
                 results.put("solved", solved);
                 results.put("obj_value", obj_f);
                 results.put("epsilon", epsilon);
                 results.put("result_x", result_x);
             }  
-			else{
+			else{// if the problem cannot be solved
 				results.put("solved", solved);
 			}
 			
             cplex.end();  
             
 		} catch (IloException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;

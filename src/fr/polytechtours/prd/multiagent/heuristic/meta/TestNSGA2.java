@@ -7,7 +7,7 @@ import fr.polytechtours.prd.multiagent.model.Job;
 import fr.polytechtours.prd.multiagent.model.Machine;
 import fr.polytechtours.prd.multiagent.util.Commun;
 
-public class Main {
+public class TestNSGA2 {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args){
