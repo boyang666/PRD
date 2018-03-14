@@ -10,7 +10,7 @@ import fr.polytechtours.prd.multiagent.util.Commun;
 public class TestGreedy {
 
 	public static void main(String[] args){
-		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-100-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
+		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-50-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
 		@SuppressWarnings("unchecked")
 		ArrayList<Job> jobs = (ArrayList<Job>) hashmap.get("jobs");
 		Machine machine = (Machine)hashmap.get("machine");
@@ -19,16 +19,20 @@ public class TestGreedy {
 		
 		Greedy greedy = new Greedy();
 		ArrayList<Job> sortedJobs = greedy.sortEpsilon(jobs);
-		int epsilon = 38;
+		int epsilon = 16;
 		ArrayList<Job> solution = greedy.executeEpsilon(sortedJobs, nbJobsA, machine, epsilon);
 		int obj_v_A = 0;
 		int obj_v_B = 0;
+		StringBuilder str = new StringBuilder("[");
 		for(int i=0; i<solution.size(); i++){
-			if(solution.get(i).id < 40)
+			str.append(solution.get(i).id).append(",");
+			if(solution.get(i).id < 20)
 				obj_v_A++;
 			else
 				obj_v_B++;
 		}
+		str.append("]");
+		System.out.println(str.toString());
 		System.out.println("Solution A : "+(nbJobsA - obj_v_A)+" , "+"Solution B : "+(nbJobs - nbJobsA - obj_v_B));
 	}
 }

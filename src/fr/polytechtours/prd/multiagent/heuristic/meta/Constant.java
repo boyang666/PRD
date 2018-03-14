@@ -17,12 +17,12 @@ public class Constant {
 	/**
 	 * max int
 	 */
-	public static final int MAX_INT = 65536;
+	public static final int MAX_INT = 65535;
 	
 	/**
 	 * number of iteration
 	 */
-	public static final int NUM_ITERATION = 3000;
+	public static final int NUM_ITERATION = 10000;
 	
 	/**
 	 * size of population
@@ -30,7 +30,12 @@ public class Constant {
 	public static final int SIZE_POPULATION = 100;
 	
 	/**
+	 * probability of crossover
+	 */
+	public static final double PROB_CROSSOVER = 0.8;
+	
+	/**
 	 * probability of mutation to happen
 	 */
-	public static final double PROB_MUTATION = 0.3;
+	public static final double PROB_MUTATION = 0.8;
 }

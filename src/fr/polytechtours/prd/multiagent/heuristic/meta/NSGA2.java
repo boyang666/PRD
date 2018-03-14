@@ -1,6 +1,7 @@
 package fr.polytechtours.prd.multiagent.heuristic.meta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import fr.polytechtours.prd.multiagent.heuristic.Greedy;
@@ -47,7 +48,7 @@ public class NSGA2 {
 		ArrayList<Individual> group = new ArrayList<Individual>();
 		Random random = new Random();
 		int size = 0;
-		int epsilon = Data.nbJobsA/2;
+		//int epsilon = Data.nbJobsA/2;
 		while(size < Constant.SIZE_POPULATION){
 			Individual ind = new Individual();
 			for(int j=0; j<Data.nbJobs; j++){
@@ -56,17 +57,25 @@ public class NSGA2 {
 				/*if(j == size)ind.genes.add(0);
 				else ind.genes.add(1);*/
 				
+				ind.genes.add(1);
+			}
+			
+			if(size > 0){
+				int index = random.nextInt(Data.nbJobsA);
+				ind.genes.set(index, 0);
+				index = Data.nbJobsA + random.nextInt(Data.nbJobs - Data.nbJobsA);
+				ind.genes.set(index, 0);
 			}
 			
 			
-			ind.genes = this.initByGreedy(epsilon);
-			epsilon++;
+			/*ind.genes = this.initByGreedy(epsilon);
+			epsilon++;*/
 			
 			ind.calculateValueObj();
 			ind.validate();
 			//System.out.println(ind.valide);
 			
-			/*boolean exist = true;
+			boolean exist = true;
 			if(ind.valide){
 				if(group.size() == 0){
 					group.add(ind);
@@ -89,12 +98,12 @@ public class NSGA2 {
 					}
 				}
 			}
-			System.out.println(exist);*/
+			System.out.println(exist);
 			size++;
 			group.add(ind);
 		}
 		
-		group = this.removeDuplicateFromArray(group);
+		//group = this.removeDuplicateFromArray(group);
 		
 		
 		if(group.size() < Constant.SIZE_POPULATION){
@@ -112,8 +121,8 @@ public class NSGA2 {
 				group.add(ind);
 			}
 		}
-		for(Individual ind: group)
-			System.out.println("A: "+ind.valuesObj.get(0)+" , B: "+ind.valuesObj.get(1));
+		/*for(Individual ind: group)
+			System.out.println("A: "+ind.valuesObj.get(0)+" , B: "+ind.valuesObj.get(1));*/
 		return group;
 	}
 	
@@ -154,19 +163,47 @@ public class NSGA2 {
 		children[0] = new Individual();
 		children[1] = new Individual();
 		int numCross = 1+random.nextInt(Data.nbJobs-1);
-		int start = random.nextInt(Data.nbJobs - numCross);
-		int end = start + numCross;
+		//int start = random.nextInt(Data.nbJobs - numCross);
+		//int start = 0;
+		//int end = start + numCross;
+		//int end = Data.nbJobs - 1;
+		ArrayList<Integer> index = new ArrayList<Integer>();
+		while(index.size() < numCross){
+			Integer pos = random.nextInt(Data.nbJobs);
+			if(!index.contains(pos)){
+				index.add(pos);
+			}
+		}
+		Collections.sort(index);
 		
-		for(int i=0; i<dad.genes.size(); i++){
-			if(i < start || i >= end){
+		if(random.nextDouble() < Constant.PROB_CROSSOVER){
+			/*for(int i=0; i<dad.genes.size(); i++){
+				if(i < start || i >= end){
+					children[0].genes.add(dad.genes.get(i));
+					children[1].genes.add(mum.genes.get(i));
+				}
+				else {
+					children[0].genes.add(mum.genes.get(i));
+					children[1].genes.add(dad.genes.get(i));
+				}
+			}*/
+			for(int i=0; i<dad.genes.size(); i++){
 				children[0].genes.add(dad.genes.get(i));
 				children[1].genes.add(mum.genes.get(i));
 			}
-			else {
-				children[0].genes.add(mum.genes.get(i));
-				children[1].genes.add(dad.genes.get(i));
+			for(int i=0; i<index.size(); i++){
+				children[0].genes.set(index.get(i), mum.genes.get(index.get(i)));
+				children[1].genes.set(index.get(i), dad.genes.get(index.get(i)));
 			}
 		}
+		else{
+			for(int i=0; i<dad.genes.size(); i++){
+				children[0].genes.add(dad.genes.get(i));
+				children[1].genes.add(mum.genes.get(i));
+			}
+		}
+		
+		
 		
 		//to calculate their values of objective functions
 		children[0].calculateValueObj();
@@ -184,12 +221,15 @@ public class NSGA2 {
 		Random random = new Random();
 		
 		for(int index=0; index<2; index++){
-			int pos = random.nextInt(children[0].genes.size());
-			if(children[index].genes.get(pos) == 1 && random.nextDouble() < Constant.PROB_MUTATION){
-				children[index].genes.set(pos, 0);
-			}else if(random.nextDouble() < Constant.PROB_MUTATION)
-				children[index].genes.set(pos, 1);
-		
+			int pos = random.nextInt(Data.nbJobs);
+			if(random.nextDouble() < Constant.PROB_MUTATION){
+				if(children[index].genes.get(pos) == 1){
+					children[index].genes.set(pos, 0);
+				}else{
+					children[index].genes.set(pos, 1);
+				}
+			}
+			
 			children[index].calculateValueObj();
 		}
 		
@@ -207,6 +247,15 @@ public class NSGA2 {
 	public ArrayList<Individual> removeDuplicateFromArray(ArrayList<Individual> pop){
 		for (int i = 0; i < pop.size() - 1; i++) {
 			for (int j = pop.size() - 1; j > i; j--) {
+				/*int k=0;
+				for(k=0; k<pop.get(j).genes.size(); k++){
+					if(pop.get(j).genes.get(k) != pop.get(i).genes.get(k)){
+						break;
+					}
+				}
+				if(k == pop.get(j).genes.size()){
+					pop.remove(j);
+				}*/
 				if (pop.get(j).valuesObj.get(0) == pop.get(i).valuesObj.get(0) && pop.get(j).valuesObj.get(1) == pop.get(i).valuesObj.get(1)) {
 					pop.remove(j);
 				}
@@ -234,7 +283,7 @@ public class NSGA2 {
 	
 	/**
 	 * Main loop for NSGA2</br>
-	 * The algorithm consists these steps:
+	 * The algorithm consists of these steps:
 	 * <ol>
 	 * <li>Initiation of population</li>
 	 * <li>Crossover, mutation</li>
@@ -296,10 +345,11 @@ public class NSGA2 {
 			nds = NondominatedSetConstructor.sort(group);// sort all individuals
 			
 			
+			
 			ArrayList<Individual> newGroup = new ArrayList<Individual>();
 			
 			int iteration = 0;
-			while (iteration < Constant.SIZE_POPULATION && (newGroup.size() + nds.get(iteration).size() <= Constant.SIZE_POPULATION) && (nds.get(iteration).size() != 0)) {
+			while (iteration < Constant.SIZE_POPULATION && (newGroup.size() + removeDuplicateFromArray(nds.get(iteration)).size() <= Constant.SIZE_POPULATION) && (nds.get(iteration).size() != 0)) {
 				// when the new population are not all filled
 			
 				nds.set(iteration, removeDuplicateFromArray(nds.get(iteration)));
@@ -314,12 +364,14 @@ public class NSGA2 {
 					j = random.nextInt(nds.get(i).size());
 					Individual ind = new Individual();
 					ind.genes.addAll(nds.get(i).get(j).genes);
-					for(int k=nds.get(i).get(j).genes.size() - 1; k>=0; k--){
-						if(nds.get(i).get(j).genes.get(k) == 0){
+					while(true){
+						int k = random.nextInt(ind.genes.size());
+						if(ind.genes.get(k) == 0){
 							ind.genes.set(k, 1);
 							break;
 						}
 					}
+					
 					ind.calculateValueObj();
 					newGroup.add(ind);
 				}
@@ -335,7 +387,7 @@ public class NSGA2 {
 			
 			
 			group = newGroup;
-			//outputInd(nds.get(0), "G" + ng);
+			outputInd(nds.get(0), "G" + ng);
 		} // all over;
 
 		return nds.get(0);
