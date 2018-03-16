@@ -349,7 +349,7 @@ public class NSGA2 {
 			ArrayList<Individual> newGroup = new ArrayList<Individual>();
 			
 			int iteration = 0;
-			while (iteration < Constant.SIZE_POPULATION && (newGroup.size() + removeDuplicateFromArray(nds.get(iteration)).size() <= Constant.SIZE_POPULATION) && (nds.get(iteration).size() != 0)) {
+			while (iteration < Constant.SIZE_POPULATION && (newGroup.size() + removeDuplicateFromArray(nds.get(iteration)).size() <= Constant.SIZE_POPULATION) && (removeDuplicateFromArray(nds.get(iteration)).size() != 0)) {
 				// when the new population are not all filled
 			
 				nds.set(iteration, removeDuplicateFromArray(nds.get(iteration)));
@@ -375,7 +375,7 @@ public class NSGA2 {
 					ind.calculateValueObj();
 					newGroup.add(ind);
 				}
-			}else{
+			}else if(sizeTemp < Constant.SIZE_POPULATION){
 				CrowdingDistanceAssignment.distanceCalculator(nds.get(iteration));
 				
 				nds.set(iteration, CrowdingDistanceAssignment.sortByDistance(nds.get(iteration)));

@@ -13,7 +13,7 @@ public class TestNSGA2 {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args){
 		//Commun.createRandomJobsAndResources(100, 3, 40, "instance-100-2-3-40.data");
-		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-50-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
+		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-100-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
 		Data.jobs = (ArrayList<Job>) hashmap.get("jobs");
 		Data.machine = (Machine)hashmap.get("machine");
 		Data.nbJobs = (int) hashmap.get("numJob");

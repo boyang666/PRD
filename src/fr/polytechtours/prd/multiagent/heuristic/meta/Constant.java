@@ -22,7 +22,7 @@ public class Constant {
 	/**
 	 * number of iteration
 	 */
-	public static final int NUM_ITERATION = 10000;
+	public static final int NUM_ITERATION = 1000;
 	
 	/**
 	 * size of population

@@ -10,7 +10,7 @@ import fr.polytechtours.prd.multiagent.util.Commun;
 public class TestExact {
 
 	public static void main(String[] args){
-		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-50-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
+		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-100-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
 		@SuppressWarnings("unchecked")
 		ArrayList<Job> jobs = (ArrayList<Job>) hashmap.get("jobs");
 		Machine machine = (Machine)hashmap.get("machine");
@@ -29,6 +29,14 @@ public class TestExact {
 				
 				HashMap<String, Object> result_sym = epsilonContraint.execute(obj_v_B, jobs, machine, nbJobs, nbJobs-nbJobsA, "B");
 				int obj_v_A = (int)result_sym.get("obj_value");
+				
+				int[] solution = (int[]) result_sym.get("result_x");
+				StringBuilder str = new StringBuilder("[");
+				for(int i=0; i<solution.length; i++){
+					str.append(solution[i]).append(",");
+				}
+				str.append("]");
+				System.out.println(str.toString());
 				
 				System.out.println("Solution A = "+obj_v_A+" , Solution B = "+obj_v_B);
 			}
