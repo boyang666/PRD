@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import fr.polytechtours.prd.multiagent.model.Data;
 import fr.polytechtours.prd.multiagent.model.Job;
 import fr.polytechtours.prd.multiagent.model.Machine;
 import fr.polytechtours.prd.multiagent.util.Commun;
@@ -14,23 +15,17 @@ public class TestNSGA2 {
 	public static void main(String[] args){
 		//Commun.createRandomJobsAndResources(100, 3, 40, "instance-100-2-3-40.data");
 		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-100-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
-		Data.jobs = (ArrayList<Job>) hashmap.get("jobs");
-		Data.machine = (Machine)hashmap.get("machine");
-		Data.nbJobs = (int) hashmap.get("numJob");
-		Data.nbJobsA = (int) hashmap.get("numJobAgentA");
-		Data.maxEnd = Commun.getMaxEnd(Data.jobs);
+		Data data = new Data();
+		data.jobs = (ArrayList<Job>) hashmap.get("jobs");
+		data.machine = (Machine)hashmap.get("machine");
+		data.nbJobs = (int) hashmap.get("numJob");
+		data.nbJobsA = (int) hashmap.get("numJobAgentA");
+		data.maxEnd = Commun.getMaxEnd(data.jobs);
 		//Collections.sort(Data.jobs);
 		
 		NSGA2 nsga2 = new NSGA2();
-		ArrayList<Individual> result = nsga2.execute();
-		for(int i=0; i<result.size(); i++){
-			StringBuilder str = new StringBuilder("[");
-			for(int j=0; j<result.get(i).genes.size(); j++){
-				str.append(result.get(i).genes.get(j)).append(",");
-			}
-			str.append("]");
-			System.out.println(str.toString());
-			System.out.println("result A: "+result.get(i).valuesObj.get(0)+" , B:"+result.get(i).valuesObj.get(1));
-		}
+		nsga2.loadParam(data);
+		nsga2.generateParetoFront();
+		
 	}
 }

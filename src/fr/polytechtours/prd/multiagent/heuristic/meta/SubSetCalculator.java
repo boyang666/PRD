@@ -3,6 +3,7 @@ package fr.polytechtours.prd.multiagent.heuristic.meta;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import fr.polytechtours.prd.multiagent.model.Data;
 import fr.polytechtours.prd.multiagent.model.Job;
 import fr.polytechtours.prd.multiagent.model.Machine;
 import fr.polytechtours.prd.multiagent.util.Commun;
@@ -37,17 +38,17 @@ public class SubSetCalculator {
 		}
 	}
 	
-	public ArrayList<Event> init(){
+	public ArrayList<Event> init(Data data){
 		ArrayList<Event> events = new ArrayList<Event>();
-		for(int i=0; i<Data.nbJobs; i++){
+		for(int i=0; i<data.nbJobs; i++){
 			Event e1 = new Event();
 			Event e2 = new Event();
-			e1.id = Data.jobs.get(i).id;
-			e2.id = Data.jobs.get(i).id;
+			e1.id = data.jobs.get(i).id;
+			e2.id = data.jobs.get(i).id;
 			e1.type = TYPE_START;
 			e2.type = TYPE_END;
-			e1.time = Data.jobs.get(i).start;
-			e2.time = Data.jobs.get(i).end;
+			e1.time = data.jobs.get(i).start;
+			e2.time = data.jobs.get(i).end;
 			events.add(e1);
 			events.add(e2);
 		}
@@ -55,8 +56,8 @@ public class SubSetCalculator {
 		return events;
 	}
 	
-	public ArrayList<ArrayList<Integer>> calculate(){
-		ArrayList<Event> events = init();
+	public ArrayList<ArrayList<Integer>> calculate(Data data){
+		ArrayList<Event> events = init(data);
 		int inc = 0;
 		ArrayList<Integer> S = new ArrayList<Integer>();
 		ArrayList<ArrayList<Integer>> subSet = new ArrayList<ArrayList<Integer>>();
@@ -89,14 +90,15 @@ public class SubSetCalculator {
 	
 	public static void main(String[] args){
 		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-100-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
-		Data.jobs = (ArrayList<Job>) hashmap.get("jobs");
-		Data.machine = (Machine)hashmap.get("machine");
-		Data.nbJobs = (int) hashmap.get("numJob");
-		Data.nbJobsA = (int) hashmap.get("numJobAgentA");
-		Data.maxEnd = Commun.getMaxEnd(Data.jobs);
+		Data data = new Data();
+		data.jobs = (ArrayList<Job>) hashmap.get("jobs");
+		data.machine = (Machine)hashmap.get("machine");
+		data.nbJobs = (int) hashmap.get("numJob");
+		data.nbJobsA = (int) hashmap.get("numJobAgentA");
+		data.maxEnd = Commun.getMaxEnd(data.jobs);
 		
 		SubSetCalculator calculator = new SubSetCalculator();
-		ArrayList<ArrayList<Integer>> result = calculator.calculate();
+		ArrayList<ArrayList<Integer>> result = calculator.calculate(data);
 		for(int i=0; i<result.size(); i++){
 			StringBuilder builder = new StringBuilder("{");
 			for(int j=0; j<result.get(i).size(); j++){

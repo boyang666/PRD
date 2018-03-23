@@ -2,8 +2,11 @@ package fr.polytechtours.prd.multiagent.heuristic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Stack;
 
+import fr.polytechtours.prd.multiagent.IAlgorithm;
+import fr.polytechtours.prd.multiagent.model.Data;
 import fr.polytechtours.prd.multiagent.model.Job;
 import fr.polytechtours.prd.multiagent.model.Machine;
 import fr.polytechtours.prd.multiagent.util.Commun;
@@ -19,11 +22,24 @@ import fr.polytechtours.prd.multiagent.util.Commun;
  * User is responsible to choose one of the two types to run the algorithm.
  * 
  * @author Boyang Wang
- * @version 1.0
- * @since Feb 10, 2018
+ * @version 2.0
+ * @since Mars 10, 2018
  *
  */
-public class Greedy {
+public class Greedy implements IAlgorithm{
+	
+	/**
+	 * type defined to perform the greedy as linear combination algorithm
+	 */
+	public static int GREEDY_LINEAR = 0;
+	/**
+	 * type defined to perform the greedy as epsilon constraint algorithm
+	 */
+	public static int GREEDY_EPSILON = 1;
+	/**
+	 * data object with parameters
+	 */
+	public Data data;
 
 	/**
 	 * sort the jobs as linear combination algorithm
@@ -32,7 +48,7 @@ public class Greedy {
 	 * @param lambda weight of jobs of agent A
 	 * @return list of jobs sorted
 	 */
-	public ArrayList<Job> sortLinear(ArrayList<Job> jobs, double lambda){
+	private ArrayList<Job> sortLinear(ArrayList<Job> jobs, double lambda){
 		ArrayList<Job> jobsGreedy = new ArrayList<Job>();
 		jobsGreedy.addAll(jobs);
 		for(int i=0; i<jobsGreedy.size(); i++){
@@ -51,7 +67,7 @@ public class Greedy {
 	 * @param jobs list of jobs
 	 * @return jobs sorted
 	 */
-	public ArrayList<Job> sortEpsilon(ArrayList<Job> jobs){
+	private ArrayList<Job> sortEpsilon(ArrayList<Job> jobs){
 		ArrayList<Job> jobsGreedy = new ArrayList<Job>();
 		jobsGreedy.addAll(jobs);
 		ArrayList<Job> jobsASorted = new ArrayList<Job>();
@@ -75,16 +91,22 @@ public class Greedy {
 	
 	/**
 	 * to execute the greedy as the linear combination
-	 * @param sortedJobs list of jobs sorted by way of linear combination
-	 * @param machine machine with resources
-	 * @return list of jobs scheduled
+	 * @return hashmap with these elements:
+	 * <ul>
+	 * <li>key:solution, type of value:ArrayList<Job>, value:the jobs of class {@link Job} which are scheduled</li>
+	 * </ul>
 	 */
-	public ArrayList<Job> executeLinear(ArrayList<Job> sortedJobs, Machine machine){
+	public HashMap<String, Object> executeLinear(){
+		HashMap<String, Object> results = new HashMap<String, Object>();
+		
+		ArrayList<Job> sortedJobs = new ArrayList<Job>();
+		sortedJobs.addAll(sortLinear(data.jobs, data.weight));
+		
 		ArrayList<Job> solution = new ArrayList<Job>();
 		Stack<Job> jobStack = new Stack<Job>();
 		
 		int maxTimeEnd = Commun.getMaxEnd(sortedJobs);
-		int[][] resourceConsumed = new int[machine.resources.size()][maxTimeEnd];
+		int[][] resourceConsumed = new int[data.machine.resources.size()][maxTimeEnd];
 		
 		ArrayList<Job> jobSet = new ArrayList<Job>();
 		jobSet.addAll(sortedJobs);
@@ -95,7 +117,7 @@ public class Greedy {
 				jobStack.push(jobSet.get(0));
 				
 				for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
-					for(int i=0; i<machine.resources.size(); i++){
+					for(int i=0; i<data.machine.resources.size(); i++){
 						resourceConsumed[i][t] += jobSet.get(0).consumes.get(i);
 					}
 				}
@@ -104,14 +126,14 @@ public class Greedy {
 			else{
 				jobStack.push(jobSet.get(0));
 				for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
-					for(int i=0; i<machine.resources.size(); i++){
+					for(int i=0; i<data.machine.resources.size(); i++){
 						resourceConsumed[i][t] += jobSet.get(0).consumes.get(i);
 					}
 				}
 				
 				boolean flag = true;
-				for(int i=0; i<machine.resources.size(); i++){
-					if((resourceConsumed[i][jobSet.get(0).start] > machine.resources.get(i)) || (resourceConsumed[i][jobSet.get(0).end-1] > machine.resources.get(i))){
+				for(int i=0; i<data.machine.resources.size(); i++){
+					if((resourceConsumed[i][jobSet.get(0).start] > data.machine.resources.get(i)) || (resourceConsumed[i][jobSet.get(0).end-1] > data.machine.resources.get(i))){
 						flag = false;
 					}
 				}
@@ -122,8 +144,8 @@ public class Greedy {
 					for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
 						
 						boolean flagT = true;
-						for(int i=0; i<machine.resources.size(); i++){
-							if(resourceConsumed[i][t] > machine.resources.get(i)){
+						for(int i=0; i<data.machine.resources.size(); i++){
+							if(resourceConsumed[i][t] > data.machine.resources.get(i)){
 								flagT = false;
 							}
 						}
@@ -138,7 +160,7 @@ public class Greedy {
 					}
 					else{
 						for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
-							for(int i=0; i<machine.resources.size(); i++){
+							for(int i=0; i<data.machine.resources.size(); i++){
 								resourceConsumed[i][t] -= jobSet.get(0).consumes.get(i);
 							}
 						}
@@ -148,7 +170,7 @@ public class Greedy {
 				}
 				else{
 					for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
-						for(int i=0; i<machine.resources.size(); i++){
+						for(int i=0; i<data.machine.resources.size(); i++){
 							resourceConsumed[i][t] -= jobSet.get(0).consumes.get(i);
 						}
 					}
@@ -160,24 +182,28 @@ public class Greedy {
 			jobSet.remove(0);
 		}
 		
-		return solution;
+		results.put("solution", solution);
+		return results;
 	}
 	
 	/**
 	 * to execute the greedy as Epsilon Constraint algorithm</br>
 	 * 
-	 * @param sortedJobs jobs are sorted by way of Epsilon Constraint
-	 * @param nbJobsA number of jobs
-	 * @param machine machine with resources
-	 * @param epsilon value of epsilon
-	 * @return list of jobs scheduled
+	 * @return hashmap with these elements:
+	 * <ul>
+	 * <li>key:solution, type of value:ArrayList<Job>, value:the jobs of class {@link Job} which are scheduled</li>
+	 * </ul>
 	 */
-	public ArrayList<Job> executeEpsilon(ArrayList<Job> sortedJobs, int nbJobsA, Machine machine, int epsilon){
+	public HashMap<String, Object> executeEpsilon(){
+		HashMap<String, Object> results = new HashMap<String, Object>();
+		
+		ArrayList<Job> sortedJobs = new ArrayList<Job>();
+		sortedJobs.addAll(sortEpsilon(data.jobs));
 		ArrayList<Job> solution = new ArrayList<Job>();
 		Stack<Job> jobStack = new Stack<Job>();
 		
 		int maxTimeEnd = Commun.getMaxEnd(sortedJobs);
-		int[][] resourceConsumed = new int[machine.resources.size()][maxTimeEnd];
+		int[][] resourceConsumed = new int[data.machine.resources.size()][maxTimeEnd];
 		
 		ArrayList<Job> jobSet = new ArrayList<Job>();
 		jobSet.addAll(sortedJobs);
@@ -185,7 +211,7 @@ public class Greedy {
 		int nbScheduleA = 0;
 		
 		while(!jobSet.isEmpty()){
-			if(jobSet.get(0).belongTo.equals("A") && nbScheduleA == (nbJobsA - epsilon)){
+			if(jobSet.get(0).belongTo.equals("A") && nbScheduleA == (data.nbJobsA - data.epsilon)){
 				jobSet.remove(0);
 			}
 			else {
@@ -196,7 +222,7 @@ public class Greedy {
 					jobStack.push(jobSet.get(0));
 					
 					for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
-						for(int i=0; i<machine.resources.size(); i++){
+						for(int i=0; i<data.machine.resources.size(); i++){
 							resourceConsumed[i][t] += jobSet.get(0).consumes.get(i);
 						}
 					}
@@ -205,14 +231,14 @@ public class Greedy {
 				else{
 					jobStack.push(jobSet.get(0));
 					for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
-						for(int i=0; i<machine.resources.size(); i++){
+						for(int i=0; i<data.machine.resources.size(); i++){
 							resourceConsumed[i][t] += jobSet.get(0).consumes.get(i);
 						}
 					}
 					
 					boolean flag = true;
-					for(int i=0; i<machine.resources.size(); i++){
-						if((resourceConsumed[i][jobSet.get(0).start] > machine.resources.get(i)) || (resourceConsumed[i][jobSet.get(0).end-1] > machine.resources.get(i))){
+					for(int i=0; i<data.machine.resources.size(); i++){
+						if((resourceConsumed[i][jobSet.get(0).start] > data.machine.resources.get(i)) || (resourceConsumed[i][jobSet.get(0).end-1] > data.machine.resources.get(i))){
 							flag = false;
 						}
 					}
@@ -223,8 +249,8 @@ public class Greedy {
 						for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
 							
 							boolean flagT = true;
-							for(int i=0; i<machine.resources.size(); i++){
-								if(resourceConsumed[i][t] > machine.resources.get(i)){
+							for(int i=0; i<data.machine.resources.size(); i++){
+								if(resourceConsumed[i][t] > data.machine.resources.get(i)){
 									flagT = false;
 								}
 							}
@@ -241,7 +267,7 @@ public class Greedy {
 						}
 						else{
 							for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
-								for(int i=0; i<machine.resources.size(); i++){
+								for(int i=0; i<data.machine.resources.size(); i++){
 									resourceConsumed[i][t] -= jobSet.get(0).consumes.get(i);
 								}
 							}
@@ -252,7 +278,7 @@ public class Greedy {
 					}
 					else{
 						for(int t=jobSet.get(0).start; t<jobSet.get(0).end; t++){
-							for(int i=0; i<machine.resources.size(); i++){
+							for(int i=0; i<data.machine.resources.size(); i++){
 								resourceConsumed[i][t] -= jobSet.get(0).consumes.get(i);
 							}
 						}
@@ -267,7 +293,46 @@ public class Greedy {
 		
 		}
 		
-		return solution;
+		results.put("solution", solution);
+		return results;
+		
+	}
+
+	@Override
+	public void loadParam(Data data) {
+		this.data = data;
+	}
+
+	@Override
+	public HashMap<String, Object> execute() {
+		if(data.typeGreedy == Greedy.GREEDY_LINEAR){
+			return this.executeLinear();
+		}
+		return this.executeEpsilon();
+	}
+
+	@Override
+	public void generateParetoFront() {
+		data.typeGreedy = Greedy.GREEDY_EPSILON;
+		for(data.epsilon = data.nbJobsA/2; data.epsilon <= data.nbJobs; data.epsilon++){
+			this.loadParam(data);
+			HashMap<String, Object> results = this.execute();
+			ArrayList<Job> solution = new ArrayList<Job>();
+			solution.addAll((ArrayList<Job>)results.get("solution"));
+			int obj_v_A = 0;
+			int obj_v_B = 0;
+			StringBuilder str = new StringBuilder("[");
+			for(int i=0; i<solution.size(); i++){
+				str.append(solution.get(i).id).append(",");
+				if(solution.get(i).id < data.nbJobsA)
+					obj_v_A++;
+				else
+					obj_v_B++;
+			}
+			str.append("]");
+			System.out.println(str.toString());
+			System.out.println("Solution A : "+(data.nbJobsA - obj_v_A)+" , "+"Solution B : "+(data.nbJobs - data.nbJobsA - obj_v_B));
+		}
 		
 	}
 }
