@@ -39,6 +39,7 @@ public interface IAlgorithm {
 	/**
 	 * To generate the pareto front with parameters adapted.<br>
 	 * This method should be called after the loading of parameters with method <strong>loadParam</strong> in Interface {@link IAlgorithm}
+	 * @return set of pareto solutions of type {@link ParetoSolution} 
 	 */
 	public Set<ParetoSolution> generateParetoFront();
 }
