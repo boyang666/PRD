@@ -3,11 +3,13 @@ package fr.polytechtours.prd.multiagent.exact;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.polytechtours.prd.multiagent.IAlgorithm;
 import fr.polytechtours.prd.multiagent.model.Data;
 import fr.polytechtours.prd.multiagent.model.Job;
-import fr.polytechtours.prd.multiagent.model.Machine;
+import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 import fr.polytechtours.prd.multiagent.util.Commun;
 import ilog.concert.IloException;
 import ilog.concert.IloIntExpr;
@@ -160,7 +162,8 @@ public class LinearCombination implements IAlgorithm{
 
 
 	@Override
-	public void generateParetoFront() {
+	public Set<ParetoSolution> generateParetoFront() {
+		Set<ParetoSolution> paretoFront = new HashSet<ParetoSolution>();
 		for(data.weight = 0.05; data.weight <= 1; data.weight = data.weight + 0.05){
 			this.loadParam(data);
 			HashMap<String, Object> result = this.execute();
@@ -169,19 +172,27 @@ public class LinearCombination implements IAlgorithm{
 				int[] result_x = (int[]) result.get("result_x");
 				int obj_v_A = 0;
 				int obl_v_B = 0;
+				ParetoSolution solution = new ParetoSolution();
 				for(int i=0; i<result_x.length; i++){
-					if(result_x[i] == 1 && i<data.nbJobsA){
+					if(result_x[i] == 0){
+						solution.sequence.add(i);
+					}
+					else if(result_x[i] == 1 && i<data.nbJobsA){
 						obj_v_A++;
 					}
 					else if(result_x[i] == 1 && i>=data.nbJobsA){
 						obl_v_B++;
 					}
 				}
-				System.out.println("Solution A : "+obj_v_A+" , "+"Solution B : "+obl_v_B);
+				
+				solution.valueObjA = obj_v_A;
+				solution.valueObjB = obl_v_B;
+				paretoFront.add(solution);
 			}
 			
 		}
 		
+		return paretoFront;
 	}
 
 }

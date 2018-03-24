@@ -1,8 +1,9 @@
 package fr.polytechtours.prd.multiagent;
 
 import java.util.HashMap;
+import java.util.Set;
 
-import fr.polytechtours.prd.multiagent.model.Data;
+import fr.polytechtours.prd.multiagent.model.*;
 
 /**
  * 
@@ -39,5 +40,5 @@ public interface IAlgorithm {
 	 * To generate the pareto front with parameters adapted.<br>
 	 * This method should be called after the loading of parameters with method <strong>loadParam</strong> in Interface {@link IAlgorithm}
 	 */
-	public void generateParetoFront();
+	public Set<ParetoSolution> generateParetoFront();
 }

@@ -3,13 +3,16 @@ package fr.polytechtours.prd.multiagent.heuristic.meta;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import fr.polytechtours.prd.multiagent.IAlgorithm;
 import fr.polytechtours.prd.multiagent.heuristic.Greedy;
 import fr.polytechtours.prd.multiagent.model.Data;
 import fr.polytechtours.prd.multiagent.model.Job;
 import fr.polytechtours.prd.multiagent.model.Machine;
+import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 
 /**
  * This class provides the main loop and several global methods for NSGA2.</br> 
@@ -74,10 +77,6 @@ public class NSGA2 implements IAlgorithm{
 		while(size < Constant.SIZE_POPULATION){
 			Individual ind = new Individual(data);
 			for(int j=0; j<nbJobs; j++){
-				//ind.genes.add(random.nextInt(2));
-				
-				/*if(j == size)ind.genes.add(0);
-				else ind.genes.add(1);*/
 				
 				ind.genes.add(1);
 			}
@@ -89,9 +88,6 @@ public class NSGA2 implements IAlgorithm{
 				ind.genes.set(index, 0);
 			}
 			
-			
-			/*ind.genes = this.initByGreedy(epsilon);
-			epsilon++;*/
 			
 			ind.calculateValueObj();
 			ind.validate();
@@ -428,18 +424,25 @@ public class NSGA2 implements IAlgorithm{
 	}
 
 	@Override
-	public void generateParetoFront() {
+	public Set<ParetoSolution> generateParetoFront() {
+		Set<ParetoSolution> paretoFront = new HashSet<ParetoSolution>();
 		HashMap<String, Object> results = this.execute();
 		ArrayList<Individual> result = (ArrayList<Individual>) results.get("paretoFront");
 		for(int i=0; i<result.size(); i++){
-			StringBuilder str = new StringBuilder("[");
+			ParetoSolution paretoSolution = new ParetoSolution();
+			
 			for(int j=0; j<result.get(i).genes.size(); j++){
-				str.append(result.get(i).genes.get(j)).append(",");
+				if(result.get(i).genes.get(j) == 0){
+					paretoSolution.sequence.add(data.jobs.get(j).id);
+				}
 			}
-			str.append("]");
-			System.out.println(str.toString());
-			System.out.println("result A: "+result.get(i).valuesObj.get(0)+" , B:"+result.get(i).valuesObj.get(1));
+			
+			paretoSolution.valueObjA = result.get(i).valuesObj.get(0);
+			paretoSolution.valueObjB = result.get(i).valuesObj.get(1);
+			
+			paretoFront.add(paretoSolution);
 		}
+		return paretoFront;
 	}
 
 	

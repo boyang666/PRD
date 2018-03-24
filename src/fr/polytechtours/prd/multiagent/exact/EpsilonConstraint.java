@@ -1,13 +1,13 @@
 package fr.polytechtours.prd.multiagent.exact;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.polytechtours.prd.multiagent.IAlgorithm;
 import fr.polytechtours.prd.multiagent.model.Data;
-import fr.polytechtours.prd.multiagent.model.Job;
-import fr.polytechtours.prd.multiagent.model.Machine;
+import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 import fr.polytechtours.prd.multiagent.util.Commun;
 import ilog.concert.IloException;
 import ilog.concert.IloIntExpr;
@@ -156,7 +156,8 @@ public class EpsilonConstraint implements IAlgorithm{
 	}
 
 	@Override
-	public void generateParetoFront() {
+	public Set<ParetoSolution> generateParetoFront() {
+		Set<ParetoSolution> paretoFront = new HashSet<ParetoSolution>();
 		Data data = this.data;
 		for(data.epsilon = data.nbJobsA/2; data.epsilon<=data.nbJobsA; data.epsilon++){
 			this.loadParam(data);
@@ -180,17 +181,24 @@ public class EpsilonConstraint implements IAlgorithm{
 				HashMap<String, Object> result_sym = this.execute();
 				int obj_v_A = (int)result_sym.get("obj_value");
 				
-				int[] solution = (int[]) result_sym.get("result_x");
-				StringBuilder str = new StringBuilder("[");
-				for(int i=0; i<solution.length; i++){
-					str.append(solution[i]).append(",");
-				}
-				str.append("]");
-				System.out.println(str.toString());
+				ParetoSolution paretoSolution = new ParetoSolution();
 				
-				System.out.println("Solution A = "+obj_v_A+" , Solution B = "+obj_v_B);
+				int[] solution = (int[]) result_sym.get("result_x");
+
+				for(int i=0; i<solution.length; i++){
+					if(solution[i] == 0){
+						paretoSolution.sequence.add(i);
+					}
+				}
+
+				paretoSolution.valueObjA = obj_v_A;
+				paretoSolution.valueObjB = obj_v_B;
+				
+				paretoFront.add(paretoSolution);
+				
 			}	
 		}
 		
+		return paretoFront;
 	}
 }

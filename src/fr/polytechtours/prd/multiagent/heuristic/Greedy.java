@@ -3,12 +3,14 @@ package fr.polytechtours.prd.multiagent.heuristic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import fr.polytechtours.prd.multiagent.IAlgorithm;
 import fr.polytechtours.prd.multiagent.model.Data;
 import fr.polytechtours.prd.multiagent.model.Job;
-import fr.polytechtours.prd.multiagent.model.Machine;
+import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 import fr.polytechtours.prd.multiagent.util.Commun;
 
 /**
@@ -311,8 +313,10 @@ public class Greedy implements IAlgorithm{
 		return this.executeEpsilon();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void generateParetoFront() {
+	public Set<ParetoSolution> generateParetoFront() {
+		Set<ParetoSolution> paretoFront = new HashSet<ParetoSolution>();
 		data.typeGreedy = Greedy.GREEDY_EPSILON;
 		for(data.epsilon = data.nbJobsA/2; data.epsilon <= data.nbJobs; data.epsilon++){
 			this.loadParam(data);
@@ -321,18 +325,18 @@ public class Greedy implements IAlgorithm{
 			solution.addAll((ArrayList<Job>)results.get("solution"));
 			int obj_v_A = 0;
 			int obj_v_B = 0;
-			StringBuilder str = new StringBuilder("[");
+			ParetoSolution paretoSolution = new ParetoSolution();
 			for(int i=0; i<solution.size(); i++){
-				str.append(solution.get(i).id).append(",");
+				paretoSolution.sequence.add(solution.get(i).id);
 				if(solution.get(i).id < data.nbJobsA)
 					obj_v_A++;
 				else
 					obj_v_B++;
 			}
-			str.append("]");
-			System.out.println(str.toString());
-			System.out.println("Solution A : "+(data.nbJobsA - obj_v_A)+" , "+"Solution B : "+(data.nbJobs - data.nbJobsA - obj_v_B));
+			paretoSolution.valueObjA = (data.nbJobsA - obj_v_A);
+			paretoSolution.valueObjB = (data.nbJobs - data.nbJobsA - obj_v_B);
+			paretoFront.add(paretoSolution);
 		}
-		
+		return paretoFront;
 	}
 }
