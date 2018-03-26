@@ -16,7 +16,7 @@ public class TestExact {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args){
-		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-100-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
+		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-20-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
 		Data data = new Data();
 		data.jobs.addAll((ArrayList<Job>) hashmap.get("jobs"));
 		data.machine = (Machine)hashmap.get("machine");
@@ -39,9 +39,12 @@ public class TestExact {
 			for(int i=0; i<solution.sequence.size(); i++){
 				builder.append(solution.sequence.get(i)).append(",");
 			}
+			builder.deleteCharAt(builder.length() - 1);
 			builder.append("]");
-			System.out.println(builder.toString());
-			System.out.println("Solution A: "+solution.valueObjA+" , "+"Solution B: "+solution.valueObjB);
+			System.out.println("------------------------------------------");
+			System.out.println("Jobs to schedule: " + builder.toString());
+			System.out.println("Number of jobs rejected of agent A: "+solution.valueObjA+" , "+"Number of jobs rejected of agent B: "+solution.valueObjB);
+			System.out.println("------------------------------------------");
 		}
 		System.out.println("Time consumed: "+timer.calculateTimeConsume());
 		

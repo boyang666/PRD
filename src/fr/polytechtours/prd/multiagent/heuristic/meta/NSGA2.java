@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
 import fr.polytechtours.prd.multiagent.IAlgorithm;
+import fr.polytechtours.prd.multiagent.IEvaluate;
+import fr.polytechtours.prd.multiagent.exact.EpsilonConstraint;
 import fr.polytechtours.prd.multiagent.heuristic.Greedy;
 import fr.polytechtours.prd.multiagent.model.Data;
 import fr.polytechtours.prd.multiagent.model.Job;
@@ -21,11 +24,15 @@ import fr.polytechtours.prd.multiagent.model.ParetoSolution;
  * @since Mars 10, 2018
  *
  */
-public class NSGA2 implements IAlgorithm{
+public class NSGA2 implements IAlgorithm, IEvaluate{
 	/**
 	 * data object with parameters
 	 */
 	public Data data;
+	/**
+	 * pareto front
+	 */
+	public Set<ParetoSolution> paretoFront;
 	
 	/*public ArrayList<Integer> initByGreedy(int epsilon){
 		Greedy greedy = new Greedy();
@@ -73,14 +80,17 @@ public class NSGA2 implements IAlgorithm{
 		ArrayList<Individual> group = new ArrayList<Individual>();
 		Random random = new Random();
 		int size = 0;
-		//int epsilon = Data.nbJobsA/2;
+		
+		// if the population is not filled
 		while(size < Constant.SIZE_POPULATION){
 			Individual ind = new Individual(data);
+			
+			// initialize the genes with 1
 			for(int j=0; j<nbJobs; j++){
-				
 				ind.genes.add(1);
 			}
 			
+			// choose two jobs randomly to schedule, one for agent A and one for agent B
 			if(size > 0){
 				int index = random.nextInt(nbJobsA);
 				ind.genes.set(index, 0);
@@ -91,10 +101,9 @@ public class NSGA2 implements IAlgorithm{
 			
 			ind.calculateValueObj();
 			ind.validate();
-			//System.out.println(ind.valide);
 			
-			boolean exist = true;
-			if(ind.valide){
+			boolean exist = true; // to verify if the same gene exists
+			if(ind.valide){ // if the individual is valid
 				if(group.size() == 0){
 					group.add(ind);
 					size++;
@@ -116,31 +125,10 @@ public class NSGA2 implements IAlgorithm{
 					}
 				}
 			}
-			System.out.println(exist);
 			size++;
 			group.add(ind);
 		}
 		
-		//group = this.removeDuplicateFromArray(group);
-		
-		
-		if(group.size() < Constant.SIZE_POPULATION){
-			int sizeGroup = group.size();
-			for(int i=0; i < Constant.SIZE_POPULATION - sizeGroup; i++){
-				Individual ind = new Individual(data);
-				ind.genes.addAll(group.get(i).genes);
-				for(int j=nbJobs - 1; j>=0; j--){
-					if(group.get(i).genes.get(j) == 0){
-						ind.genes.set(j, 1);
-						break;
-					}
-				}
-				ind.calculateValueObj();
-				group.add(ind);
-			}
-		}
-		/*for(Individual ind: group)
-			System.out.println("A: "+ind.valuesObj.get(0)+" , B: "+ind.valuesObj.get(1));*/
 		return group;
 	}
 	
@@ -157,6 +145,8 @@ public class NSGA2 implements IAlgorithm{
 		Random random = new Random();
 		int p = random.nextInt(pop.size());
 		int q = random.nextInt(pop.size());
+		
+		// choose the one which dominated the other
 		if(NondominatedSetConstructor.pDomQ(pop.get(p), pop.get(q))){
 			return p;
 		}
@@ -189,7 +179,10 @@ public class NSGA2 implements IAlgorithm{
 		Individual[] children = new Individual[2];
 		children[0] = new Individual(data);
 		children[1] = new Individual(data);
-		int numCross = 1+random.nextInt(dad.genes.size()-1);
+		
+		int numCross = 1+random.nextInt(dad.genes.size()-1); // number of genes to crossover
+		
+		// choose index to do the crossover
 		ArrayList<Integer> index = new ArrayList<Integer>();
 		while(index.size() < numCross){
 			Integer pos = random.nextInt(dad.genes.size());
@@ -199,6 +192,7 @@ public class NSGA2 implements IAlgorithm{
 		}
 		Collections.sort(index);
 		
+		// do the crossover
 		if(random.nextDouble() < Constant.PROB_CROSSOVER){
 			for(int i=0; i<dad.genes.size(); i++){
 				children[0].genes.add(dad.genes.get(i));
@@ -236,8 +230,8 @@ public class NSGA2 implements IAlgorithm{
 	public Individual[] mutation(Individual[] children){
 		Random random = new Random();
 		
-		for(int index=0; index<2; index++){
-			int pos = random.nextInt(children[0].genes.size());
+		for(int index=0; index<children.length; index++){
+			int pos = random.nextInt(children[0].genes.size()); // position to do the mutation
 			if(random.nextDouble() < Constant.PROB_MUTATION){
 				if(children[index].genes.get(pos) == 1){
 					children[index].genes.set(pos, 0);
@@ -250,8 +244,10 @@ public class NSGA2 implements IAlgorithm{
 		}
 		
 		// to verify the children's feasibility
-		children[0].validate();
-		children[1].validate();
+		for(int i=0; i<children.length; i++){
+			children[i].validate();
+		}
+
 		return children;
 	}
 	
@@ -264,15 +260,6 @@ public class NSGA2 implements IAlgorithm{
 	public ArrayList<Individual> removeDuplicateFromArray(ArrayList<Individual> pop){
 		for (int i = 0; i < pop.size() - 1; i++) {
 			for (int j = pop.size() - 1; j > i; j--) {
-				/*int k=0;
-				for(k=0; k<pop.get(j).genes.size(); k++){
-					if(pop.get(j).genes.get(k) != pop.get(i).genes.get(k)){
-						break;
-					}
-				}
-				if(k == pop.get(j).genes.size()){
-					pop.remove(j);
-				}*/
 				if (pop.get(j).valuesObj.get(0) == pop.get(i).valuesObj.get(0) && pop.get(j).valuesObj.get(1) == pop.get(i).valuesObj.get(1)) {
 					pop.remove(j);
 				}
@@ -375,23 +362,28 @@ public class NSGA2 implements IAlgorithm{
 			int iteration = 0;
 			while (iteration < Constant.SIZE_POPULATION && (newGroup.size() + removeDuplicateFromArray(nds.get(iteration)).size() <= Constant.SIZE_POPULATION) && (removeDuplicateFromArray(nds.get(iteration)).size() != 0)) {
 				// when the new population are not all filled
-			
 				nds.set(iteration, removeDuplicateFromArray(nds.get(iteration)));
 				newGroup.addAll(nds.get(iteration));
 				iteration++;
 			}
 			
 			int sizeTemp = newGroup.size();
+			
+			// if no more individual can be added into the population
 			if(nds.get(iteration).size() == 0 && sizeTemp < Constant.SIZE_POPULATION){
 				int i=0, j=0;
+				
+				// if the current population are not filled
 				while(newGroup.size() < Constant.SIZE_POPULATION){
+					
+					// choose one individual randomly
 					j = random.nextInt(nds.get(i).size());
 					Individual ind = new Individual(data);
 					ind.genes.addAll(nds.get(i).get(j).genes);
 					while(true){
-						int k = random.nextInt(ind.genes.size());
-						if(ind.genes.get(k) == 0){
-							ind.genes.set(k, 1);
+						int k = random.nextInt(ind.genes.size()); // choose one position
+						if(ind.genes.get(k) == 0){ 
+							ind.genes.set(k, 1); // do not schedule this job to make a new feasible individual 
 							break;
 						}
 					}
@@ -399,11 +391,15 @@ public class NSGA2 implements IAlgorithm{
 					ind.calculateValueObj();
 					newGroup.add(ind);
 				}
-			}else if(sizeTemp < Constant.SIZE_POPULATION){
+			}else if(sizeTemp < Constant.SIZE_POPULATION){ // when there are still individuals which can be added
+				
+				// calculate the crowded distances
 				CrowdingDistanceAssignment.distanceCalculator(nds.get(iteration));
 				
 				nds.set(iteration, CrowdingDistanceAssignment.sortByDistance(nds.get(iteration)));
 				int size = newGroup.size();
+				
+				//add individuals sorted by crowded distance until the population is filled
 				for (int j = 0; j < Constant.SIZE_POPULATION - size; j++) {
 					newGroup.add(nds.get(iteration).get(j));
 				}
@@ -420,12 +416,17 @@ public class NSGA2 implements IAlgorithm{
 
 	@Override
 	public void loadParam(Data data) {
-		this.data = data;
+		this.data = new Data();
+		this.data.jobs = data.jobs;
+		this.data.machine = data.machine;
+		this.data.nbJobs = data.nbJobs;
+		this.data.nbJobsA = data.nbJobsA;
+		this.data.maxEnd = data.maxEnd;
 	}
 
 	@Override
 	public Set<ParetoSolution> generateParetoFront() {
-		Set<ParetoSolution> paretoFront = new HashSet<ParetoSolution>();
+		paretoFront = new HashSet<ParetoSolution>();
 		HashMap<String, Object> results = this.execute();
 		ArrayList<Individual> result = (ArrayList<Individual>) results.get("paretoFront");
 		for(int i=0; i<result.size(); i++){
@@ -443,6 +444,58 @@ public class NSGA2 implements IAlgorithm{
 			paretoFront.add(paretoSolution);
 		}
 		return paretoFront;
+	}
+
+	@Override
+	public double getMeanDistance(Set<ParetoSolution> frontExact) {
+		HashSet<ParetoSolution> frontNSGA2 = (HashSet<ParetoSolution>) this.paretoFront;
+
+		// initiation of iterators
+		Iterator<ParetoSolution> iterExact; 
+		Iterator<ParetoSolution> iterNSGA2 = frontNSGA2.iterator();
+		double distanceTotal = 0.0;
+		
+		while(iterNSGA2.hasNext()){
+			ParetoSolution solutionNSGA2 = iterNSGA2.next();
+			double minDistance = Double.MAX_VALUE; // min distance
+			iterExact = frontExact.iterator(); 
+			while(iterExact.hasNext()){
+				ParetoSolution solutionExact = iterExact.next();
+				double distanceTemp = Math.sqrt(Math.pow((solutionNSGA2.valueObjA - solutionExact.valueObjA), 2) + Math.pow((solutionNSGA2.valueObjB - solutionExact.valueObjB), 2));
+				if(distanceTemp < minDistance){ // if temp distance is smaller
+					minDistance = distanceTemp;
+				}
+			}
+			
+			distanceTotal += minDistance;
+		}
+		
+		return (double)(distanceTotal / frontNSGA2.size());
+	}
+
+	@Override
+	public double percentOptimalSolution(Set<ParetoSolution> frontExact) {
+		HashSet<ParetoSolution> frontNSGA2 = (HashSet<ParetoSolution>) this.paretoFront;
+		
+		double numOptimal = 0.0;
+		// initiation of iterators
+		Iterator<ParetoSolution> iterExact = frontExact.iterator(); 
+		Iterator<ParetoSolution> iterNSGA2;
+		
+		while(iterExact.hasNext()){
+			ParetoSolution solutionExact = iterExact.next();
+			iterNSGA2 = frontNSGA2.iterator();
+			while(iterNSGA2.hasNext()){
+				ParetoSolution solutionNSGA2 = iterNSGA2.next();
+				// if the same solution found
+				if(solutionNSGA2.valueObjA == solutionExact.valueObjA && solutionNSGA2.valueObjB == solutionExact.valueObjB){
+					numOptimal++;
+					break;
+				}
+			}
+		}
+		
+		return (double)(numOptimal * 100 / frontExact.size());
 	}
 
 	

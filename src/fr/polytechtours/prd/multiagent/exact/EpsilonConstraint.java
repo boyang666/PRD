@@ -30,6 +30,10 @@ public class EpsilonConstraint implements IAlgorithm{
 	 * data object with parameters
 	 */
 	public Data data;
+	/**
+	 * pareto front
+	 */
+	public Set<ParetoSolution> paretoFront;
 
 	/**
 	 * Function to execute the algorithm Epsilon Constraint</br>
@@ -152,12 +156,18 @@ public class EpsilonConstraint implements IAlgorithm{
 
 	@Override
 	public void loadParam(Data data) {
-		this.data = data;
+		this.data = new Data();
+		this.data.jobs = data.jobs;
+		this.data.machine = data.machine;
+		this.data.nbJobs = data.nbJobs;
+		this.data.nbJobsA = data.nbJobsA;
+		this.data.epsilon = data.epsilon;
+		this.data.agent = data.agent;
 	}
 
 	@Override
 	public Set<ParetoSolution> generateParetoFront() {
-		Set<ParetoSolution> paretoFront = new HashSet<ParetoSolution>();
+		paretoFront = new HashSet<ParetoSolution>();
 		Data data = this.data;
 		for(data.epsilon = data.nbJobsA/2; data.epsilon<=data.nbJobsA; data.epsilon++){
 			this.loadParam(data);

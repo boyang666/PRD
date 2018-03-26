@@ -157,7 +157,13 @@ public class LinearCombination implements IAlgorithm{
 
 	@Override
 	public void loadParam(Data data) {
-		this.data = data;
+		this.data = new Data();
+		this.data.jobs = data.jobs;
+		this.data.machine = data.machine;
+		this.data.nbJobs = data.nbJobs;
+		this.data.nbJobsA = data.nbJobsA;
+		this.data.weight = data.weight;
+		this.data.agent = data.agent;
 	}
 
 
