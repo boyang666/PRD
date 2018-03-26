@@ -21,7 +21,7 @@ import fr.polytechtours.prd.multiagent.util.Commun;
 
 /**
  * 
- * Greedy Heuristic for solving the multi-objectif problem.</br>
+ * Greedy Heuristic for solving the multi-objectif problem.<br>
  * Two types of execution are implemented:
  * <ol>
  * <li>to execute the greedy algorithm as the linear combination</li>
@@ -74,7 +74,7 @@ public class Greedy implements IAlgorithm, IEvaluate{
 	}
 	
 	/**
-	 * sort jobs as Epsilon Constraint algorithm</br>
+	 * sort jobs as Epsilon Constraint algorithm<br>
 	 * For each agent, their jobs are sorted just among their range
 	 * @param jobs list of jobs
 	 * @return jobs sorted
@@ -110,7 +110,7 @@ public class Greedy implements IAlgorithm, IEvaluate{
 	 * </ol>
 	 * @return hashmap with these elements:
 	 * <ul>
-	 * <li>key:solution, type of value:ArrayList<Job>, value:the jobs of class {@link Job} which are scheduled</li>
+	 * <li>key:solution, type of value:ArrayList of {@link Job}, value:the jobs of class {@link Job} which are scheduled</li>
 	 * </ul>
 	 */
 	public HashMap<String, Object> executeLinear(){
@@ -212,7 +212,7 @@ public class Greedy implements IAlgorithm, IEvaluate{
 	}
 	
 	/**
-	 * to execute the greedy as Epsilon Constraint algorithm</br>
+	 * to execute the greedy as Epsilon Constraint algorithm<br>
 	 * <ol>
 	 * <li>Sort all jobs by using <strong>sortEpsilon</strong>.</li>
 	 * <li>Choose jobs in order to schedule when the constraints are respected. If not feasible, do not schedule this job.</li>
@@ -220,7 +220,7 @@ public class Greedy implements IAlgorithm, IEvaluate{
 	 * </ol>
 	 * @return hashmap with these elements:
 	 * <ul>
-	 * <li>key:solution, type of value:ArrayList<Job>, value:the jobs of class {@link Job} which are scheduled</li>
+	 * <li>key:solution, type of value:ArrayList of {@link Job}, value:the jobs of class {@link Job} which are scheduled</li>
 	 * </ul>
 	 */
 	public HashMap<String, Object> executeEpsilon(){

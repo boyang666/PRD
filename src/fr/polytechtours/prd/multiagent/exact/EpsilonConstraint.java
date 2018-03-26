@@ -15,9 +15,9 @@ import ilog.concert.IloIntVar;
 import ilog.cplex.IloCplex;
 
 /**
- * Implementation of algorithm Epsilon Constraint </br>
- * This algorithm is an exact method to solve the multi-objectifs problems</br>
- * To solve the problem, we use the library of CPLEX as the solver.</br>
+ * Implementation of algorithm Epsilon Constraint <br>
+ * This algorithm is an exact method to solve the multi-objectifs problems<br>
+ * To solve the problem, we use the library of CPLEX as the solver.<br>
  * In order to get the optimal pareto front, we need to solve the symmetric problem  
  * 
  * @author Boyang Wang
@@ -36,7 +36,7 @@ public class EpsilonConstraint implements IAlgorithm{
 	public Set<ParetoSolution> paretoFront;
 
 	/**
-	 * Function to execute the algorithm Epsilon Constraint</br>
+	 * Function to execute the algorithm Epsilon Constraint<br>
 	 * We use CPLEX to solve the problem
 	 * 
 	 * @return a hashmap with keys as :

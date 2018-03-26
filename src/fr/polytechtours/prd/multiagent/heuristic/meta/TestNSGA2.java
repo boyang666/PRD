@@ -14,6 +14,14 @@ import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 import fr.polytechtours.prd.multiagent.util.Commun;
 import fr.polytechtours.prd.multiagent.util.Timer;
 
+/**
+ * Test class for NSGA2 method
+ * 
+ * @author Boyang Wang
+ * @version 1.0
+ * @since Mars 1, 2018
+ *
+ */
 public class TestNSGA2 {
 
 	@SuppressWarnings("unchecked")

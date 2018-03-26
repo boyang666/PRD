@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import fr.polytechtours.prd.multiagent.model.Data;
 /**
- * Individual to simulation one solution of NSGA2</br>
+ * Individual to simulation one solution of NSGA2<br>
  * One individual contains :
  * <ul>
  * <li>genes: its genes of size N with 0 for scheduled and 1 for abandoned</li>
@@ -51,6 +51,7 @@ public class Individual implements Calculate{
 	public boolean valide = true;
 	/**
 	 * constructor
+	 * @param data data to use
 	 */
 	public Individual(Data data){
 		this.data = data;
@@ -61,14 +62,14 @@ public class Individual implements Calculate{
 	}
 	/**
 	 * to change number dominated
-	 * @param change
+	 * @param change numer of change
 	 */
 	public void changeNumDominated(int change){
 		this.numDominated += change;
 	}
 	/**
 	 * to add one individual into the set dominant
-	 * @param ind
+	 * @param ind individual
 	 */
 	public void addIndividualDominant(Individual ind){
 		this.setDominant.add(ind);

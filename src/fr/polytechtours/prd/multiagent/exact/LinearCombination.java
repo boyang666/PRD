@@ -17,10 +17,10 @@ import ilog.concert.IloIntVar;
 import ilog.cplex.IloCplex;
 
 /**
- * Implementation of algorithm Linear Combination </br>
- * This algorithm is an exact method to solve the multi-objectifs problems</br>
- * To solve the problem, we use the library of CPLEX as the solver.</br>
- * We need to change the coefficient to get the pareto front.</br>
+ * Implementation of algorithm Linear Combination <br>
+ * This algorithm is an exact method to solve the multi-objectifs problems<br>
+ * To solve the problem, we use the library of CPLEX as the solver.<br>
+ * We need to change the coefficient to get the pareto front.<br>
  * This method is not as good as {@link EpsilonConstraint}. 
  * 
  * @author Boyang Wang

@@ -18,7 +18,7 @@ import fr.polytechtours.prd.multiagent.model.Machine;
 import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 
 /**
- * This class provides the main loop and several global methods for NSGA2.</br> 
+ * This class provides the main loop and several global methods for NSGA2.<br> 
  * @author Boyang Wang
  * @version 1.0
  * @since Mars 10, 2018
@@ -71,10 +71,10 @@ public class NSGA2 implements IAlgorithm, IEvaluate{
 	 * <li>if this gene already exists, re-do the random process. if not, add the individual into the population</li>
 	 * </ul>
 	 * We loop the process above until the population is filled
-	 * @param jobs
-	 * @param nbJobs
-	 * @param nbJobsA
-	 * @return
+	 * @param jobs jobs to schedule
+	 * @param nbJobs number of all jobs
+	 * @param nbJobsA number of jobs of agent A
+	 * @return population initialized
 	 */
 	public ArrayList<Individual> initGroup(ArrayList<Job> jobs, int nbJobs, int nbJobsA){
 		ArrayList<Individual> group = new ArrayList<Individual>();
@@ -287,7 +287,7 @@ public class NSGA2 implements IAlgorithm, IEvaluate{
 	}
 	
 	/**
-	 * Main loop for NSGA2</br>
+	 * Main loop for NSGA2<br>
 	 * The algorithm consists of these steps:
 	 * <ol>
 	 * <li>Initiation of population</li>
@@ -298,7 +298,7 @@ public class NSGA2 implements IAlgorithm, IEvaluate{
 	 * </ol>
 	 * @return hashmap with elements:
 	 * <ul>
-	 * <li>key:paretoFront, type of value:ArrayList<Individual>, value:pareto front</li>
+	 * <li>key:paretoFront, type of value:ArrayList of Individual, value:pareto front</li>
 	 * </ul>
 	 */
 	@Override

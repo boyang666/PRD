@@ -13,6 +13,14 @@ import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 import fr.polytechtours.prd.multiagent.util.Commun;
 import fr.polytechtours.prd.multiagent.util.Timer;
 
+/**
+ * Test class for Greedy method
+ * 
+ * @author Boyang Wang
+ * @version 1.0
+ * @since Feb 1, 2018
+ *
+ */
 public class TestGreedy {
 
 	@SuppressWarnings("unchecked")

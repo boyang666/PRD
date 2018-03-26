@@ -40,7 +40,7 @@ public class CrowdingDistanceAssignment {
 	} 
 	
 	/**
-	 * to sort the individuals in order of their fitness</br>
+	 * to sort the individuals in order of their fitness<br>
 	 * the fitness if calculated by the objective function 
 	 * @param popNonSorted the population not sorted
 	 * @param numFunctionObj index of objective function

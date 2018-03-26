@@ -3,8 +3,8 @@ package fr.polytechtours.prd.multiagent.heuristic.meta;
 import java.util.ArrayList;
 
 /**
- * This class provides methods to sort the population by their level of dominant</br>
- * In return, several sets are returned in order of their rank of dominant</br>
+ * This class provides methods to sort the population by their level of dominant<br>
+ * In return, several sets are returned in order of their rank of dominant<br>
  * The lower rank comes first
  * 
  * @author Boyang Wang
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class NondominatedSetConstructor {
 
 	/**
-	 * To verify if individual p dominates q.</br>
+	 * To verify if individual p dominates q.<br>
 	 * If p dominates q, all values of objective functions of p are smaller than q
 	 * @param p individual
 	 * @param q individual
@@ -33,7 +33,7 @@ public class NondominatedSetConstructor {
 		return true;
 	}
 	/**
-	 * To sort the population by order of their level of dominant.</br>
+	 * To sort the population by order of their level of dominant.<br>
 	 * One set contains individuals with the same level of dominant.
 	 * @param pop population not sorted
 	 * @return different sets of different levels of dominant
