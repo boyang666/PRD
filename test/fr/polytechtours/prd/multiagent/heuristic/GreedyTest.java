@@ -18,10 +18,24 @@ import fr.polytechtours.prd.multiagent.model.Machine;
 import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 import fr.polytechtours.prd.multiagent.util.Commun;
 
+/**
+ * We use this test case to verify the feasibility of the pareto solutions got by Greedy<br>
+ * Test case for verifying if the consumes of resources are beyond the total quantity.<br>
+ * If no more than the total amount of resources for every moment, test pass.
+ * 
+ * @author Boyang Wang
+ * @version 1.0
+ * @since 24 Mars, 2018
+ *
+ */
 public class GreedyTest {
-	
+	/**
+	 * pareto front
+	 */
 	Set<ParetoSolution> front = new HashSet<ParetoSolution>();
-	
+	/**
+	 * data to use
+	 */
 	Data data;
 
 

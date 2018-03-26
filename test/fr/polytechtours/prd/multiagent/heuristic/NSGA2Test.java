@@ -19,10 +19,24 @@ import fr.polytechtours.prd.multiagent.model.Machine;
 import fr.polytechtours.prd.multiagent.model.ParetoSolution;
 import fr.polytechtours.prd.multiagent.util.Commun;
 
+/**
+ * We use this test case to verify the feasibility of the pareto solutions got by NSGA2<br>
+ * Test case for verifying if the consumes of resources are beyond the total quantity.<br>
+ * If no more than the total amount of resources for every moment, test pass.
+ * 
+ * @author Boyang Wang
+ * @version 1.0
+ * @since 24 Mars, 2018
+ *
+ */
 public class NSGA2Test {
-	
+	/**
+	 * pareto front
+	 */
 	Set<ParetoSolution> front = new HashSet<ParetoSolution>();
-	
+	/**
+	 * data to use
+	 */
 	Data data;
 	
 	@Before

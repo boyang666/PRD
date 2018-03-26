@@ -36,11 +36,17 @@ import fr.polytechtours.prd.multiagent.util.Commun;
  *
  */
 public class EpsilonConstraintTest {
-	
+	/**
+	 * pareto front
+	 */
 	Set<ParetoSolution> front = new HashSet<ParetoSolution>();
-	
+	/**
+	 * data to use
+	 */
 	Data data;
-	
+	/**
+	 * optimal solutions verified
+	 */
 	int[][] optimalSolutions;
 
 	@Before

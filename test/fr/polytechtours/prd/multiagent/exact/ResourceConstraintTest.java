@@ -29,9 +29,13 @@ import fr.polytechtours.prd.multiagent.util.Commun;
  *
  */
 public class ResourceConstraintTest {
-	
+	/**
+	 * pareto front
+	 */
 	Set<ParetoSolution> front = new HashSet<ParetoSolution>();
-	
+	/**
+	 * data to use
+	 */
 	Data data;
 
 	@Before
