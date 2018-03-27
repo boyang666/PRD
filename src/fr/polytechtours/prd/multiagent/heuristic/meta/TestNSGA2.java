@@ -26,7 +26,6 @@ public class TestNSGA2 {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args){
-		//Commun.createRandomJobsAndResources(100, 3, 40, "instance-100-2-3-40.data");
 		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-80-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
 		Data data = new Data();
 		data.jobs = (ArrayList<Job>) hashmap.get("jobs");

@@ -41,7 +41,7 @@ public class GreedyTest {
 
 	@Before
 	public void setUp() throws Exception {
-		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-20-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
+		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-test.data", Job.TYPE_FACTOR_SORT_MAX);
 		
 		data = new Data();
 		data.jobs.addAll((ArrayList<Job>) hashmap.get("jobs"));
