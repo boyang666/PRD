@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
@@ -379,6 +380,38 @@ public class Greedy implements IAlgorithm, IEvaluate{
 			paretoSolution.valueObjB = (data.nbJobs - data.nbJobsA - obj_v_B);
 			paretoFront.add(paretoSolution);
 		}
+		
+		// remove weak pareto solutions
+		List<ParetoSolution> frontModified = new ArrayList<ParetoSolution>();
+		
+		Iterator<ParetoSolution> iter = paretoFront.iterator();
+		while(iter.hasNext()){
+			ParetoSolution solution = iter.next();
+			if(frontModified.size() == 0){
+				frontModified.add(solution);
+			}
+			else{
+				boolean isBetter = false;
+				for(int i=0; i<frontModified.size(); i++){
+					if(frontModified.get(i).valueObjB == solution.valueObjB && frontModified.get(i).valueObjA > solution.valueObjA){
+						frontModified.remove(i);
+						frontModified.add(solution);
+						isBetter = true;
+						break;
+					}
+					else if(frontModified.get(i).valueObjB == solution.valueObjB && frontModified.get(i).valueObjA < solution.valueObjA){
+						isBetter = true;
+					}
+				}
+				if(!isBetter){
+					frontModified.add(solution);
+				}
+			}
+			
+		}
+		
+		this.paretoFront.clear();
+		this.paretoFront.addAll(frontModified);
 		return paretoFront;
 	}
 
@@ -434,5 +467,57 @@ public class Greedy implements IAlgorithm, IEvaluate{
 		}
 		
 		return (double)(numOptimal * 100 / frontExact.size());
+	}
+
+	@Override
+	public double getHyperVolume(Set<ParetoSolution> frontExact) {
+		HashSet<ParetoSolution> frontGreedy = (HashSet<ParetoSolution>) this.paretoFront;
+		
+		double hypervolume = 0.0;
+		
+		// sort the pareto solutions of front Exact
+		List<ParetoSolution> listExact = new ArrayList<ParetoSolution>();
+		Iterator<ParetoSolution> iterExact = frontExact.iterator(); 
+		while(iterExact.hasNext()){
+			ParetoSolution solutionExact = iterExact.next();
+			listExact.add(solutionExact);
+		}
+		Collections.sort(listExact);
+		
+		// sort the pareto solutions of front Greedy
+		List<ParetoSolution> listGreedy = new ArrayList<ParetoSolution>();
+		Iterator<ParetoSolution> iterGreedy = frontGreedy.iterator(); 
+		while(iterGreedy.hasNext()){
+			ParetoSolution solutionGreedy = iterGreedy.next();
+			listGreedy.add(solutionGreedy);
+		}
+		Collections.sort(listGreedy);
+		
+		// calculate square of exact front
+		double squareExact = 0.0;
+		for(int i=0; i<listExact.size(); i++){
+			if(i == 0){
+				squareExact += listExact.get(i).valueObjA * listExact.get(i).valueObjB;
+			}
+			else{
+				squareExact += (listExact.get(i).valueObjA - listExact.get(i-1).valueObjA) * listExact.get(i).valueObjB;
+			}
+		}
+		
+		// calculate square of greedy front
+		double squareGreedy = 0.0;
+		for(int i=0; i<listGreedy.size(); i++){
+			if(i == 0){
+				squareGreedy += listGreedy.get(i).valueObjA * listGreedy.get(i).valueObjB;
+			}
+			else{
+				squareGreedy += (listGreedy.get(i).valueObjA - listGreedy.get(i-1).valueObjA) * listGreedy.get(i).valueObjB;
+			}
+		}
+		
+		// sub of two squares
+		hypervolume = squareGreedy - squareExact;
+		
+		return hypervolume;
 	}
 }

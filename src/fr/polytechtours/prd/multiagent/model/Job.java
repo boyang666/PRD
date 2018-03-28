@@ -14,17 +14,43 @@ import java.util.ArrayList;
  *
  */
 public class Job implements Comparable<Job>{
-
+	/**
+	 * type to sort jobs with sum strategy
+	 */
 	public static final int TYPE_FACTOR_SORT_SUM = 0;
+	/**
+	 * type to sort jobs with max strategy
+	 */
 	public static final int TYPE_FACTOR_SORT_MAX = 1;
 	
-	public int id; // id for the job
-	public int start; // start time
-	public int end; // end time
-	public ArrayList<Integer> consumes; // list of consuming of resources
-	public String belongTo; // which agent it belongs to
-	public double weight; // the weight of job
-	public double factorOfSort; // the factor for doing the sort
+	/**
+	 * id for the job
+	 */
+	public int id; 
+	/**
+	 * start time
+	 */
+	public int start; 
+	/**
+	 * end time
+	 */
+	public int end; 
+	/**
+	 * list of consuming of resources
+	 */
+	public ArrayList<Integer> consumes;
+	/**
+	 * which agent it belongs to
+	 */
+	public String belongTo; 
+	/**
+	 * the weight of job
+	 */
+	public double weight; 
+	/**
+	 * the factor for doing the sort
+	 */
+	public double factorOfSort; 
 	
 	/**
 	 * constructor
@@ -33,7 +59,11 @@ public class Job implements Comparable<Job>{
 		consumes = new ArrayList<Integer>();
 	}
 	
-	
+	/**
+	 * To calculate the factor of sort before sorting the jobs
+	 * 
+	 * @param type type of sort {TYPE_FACTOR_SORT_SUM or TYPE_FACTOR_SORT_MAX}
+	 */
 	public void calculateFactorOfSort(int type) {
 		if(type == Job.TYPE_FACTOR_SORT_SUM){
 			int sumConsume = 0;

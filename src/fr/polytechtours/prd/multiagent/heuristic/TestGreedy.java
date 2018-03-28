@@ -61,5 +61,6 @@ public class TestGreedy {
 		Set<ParetoSolution> frontExact = epsilonContraint.generateParetoFront();
 		System.out.println("Percentage of optimal solution found: "+String.format("%.2f",greedy.percentOptimalSolution(frontExact))+"%");
 		System.out.println("Mean distance between two pareto fronts: "+String.format("%.2f", greedy.getMeanDistance(frontExact)));
+		System.out.println("Hypervolume between two pareto fronts: "+String.format("%.1f", greedy.getHyperVolume(frontExact)));
 	}
 }

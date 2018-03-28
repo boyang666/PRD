@@ -13,7 +13,10 @@ import java.util.ArrayList;
  */
 public class Machine {
 
-	public ArrayList<Integer> resources; // all resources
+	/**
+	 * all resources with total quantity 
+	 */
+	public ArrayList<Integer> resources;
 	
 	/**
 	 * constructor

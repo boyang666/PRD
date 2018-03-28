@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -496,6 +497,58 @@ public class NSGA2 implements IAlgorithm, IEvaluate{
 		}
 		
 		return (double)(numOptimal * 100 / frontExact.size());
+	}
+
+	@Override
+	public double getHyperVolume(Set<ParetoSolution> frontExact) {
+		HashSet<ParetoSolution> frontNSGA = (HashSet<ParetoSolution>) this.paretoFront;
+		
+		double hypervolume = 0.0;
+		
+		// sort the pareto solutions of front Exact
+		List<ParetoSolution> listExact = new ArrayList<ParetoSolution>();
+		Iterator<ParetoSolution> iterExact = frontExact.iterator(); 
+		while(iterExact.hasNext()){
+			ParetoSolution solutionExact = iterExact.next();
+			listExact.add(solutionExact);
+		}
+		Collections.sort(listExact);
+		
+		// sort the pareto solutions of front NSGA
+		List<ParetoSolution> listNSGA = new ArrayList<ParetoSolution>();
+		Iterator<ParetoSolution> iterNSGA = frontNSGA.iterator(); 
+		while(iterNSGA.hasNext()){
+			ParetoSolution solutionGreedy = iterNSGA.next();
+			listNSGA.add(solutionGreedy);
+		}
+		Collections.sort(listNSGA);
+		
+		// calculate square of exact front
+		double squareExact = 0.0;
+		for(int i=0; i<listExact.size(); i++){
+			if(i == 0){
+				squareExact += listExact.get(i).valueObjA * listExact.get(i).valueObjB;
+			}
+			else{
+				squareExact += (listExact.get(i).valueObjA - listExact.get(i-1).valueObjA) * listExact.get(i).valueObjB;
+			}
+		}
+		
+		// calculate square of nsga front
+		double squareNSGA = 0.0;
+		for(int i=0; i<listNSGA.size(); i++){
+			if(i == 0){
+				squareNSGA += listNSGA.get(i).valueObjA * listNSGA.get(i).valueObjB;
+			}
+			else{
+				squareNSGA += (listNSGA.get(i).valueObjA - listNSGA.get(i-1).valueObjA) * listNSGA.get(i).valueObjB;
+			}
+		}
+		
+		// sub of two squares
+		hypervolume = squareNSGA - squareExact;
+		
+		return hypervolume;
 	}
 
 	

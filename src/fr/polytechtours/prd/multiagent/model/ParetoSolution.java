@@ -51,7 +51,7 @@ public class ParetoSolution implements Comparable<ParetoSolution>{
 		if(this.valueObjA == solution.valueObjA && this.valueObjB == solution.valueObjB){
 			return 0;
 		}
-		if(this.valueObjA < solution.valueObjA && this.valueObjB < solution.valueObjB){
+		if(this.valueObjA < solution.valueObjA){
 			return -1;
 		}
 		else{

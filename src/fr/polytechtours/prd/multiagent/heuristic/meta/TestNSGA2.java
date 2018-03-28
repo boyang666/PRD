@@ -61,5 +61,6 @@ public class TestNSGA2 {
 		Set<ParetoSolution> frontExact = epsilonContraint.generateParetoFront();
 		System.out.println("Percentage of optimal solution found: "+String.format("%.2f",nsga2.percentOptimalSolution(frontExact))+"%");
 		System.out.println("Mean distance between two pareto fronts: "+String.format("%.2f", nsga2.getMeanDistance(frontExact)));
+		System.out.println("Hypervolume between two pareto fronts: "+String.format("%.1f", nsga2.getHyperVolume(frontExact)));
 	}
 }

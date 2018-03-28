@@ -41,4 +41,14 @@ public interface IEvaluate {
 	 * @return percentage of optimal solutions found
 	 */
 	public double percentOptimalSolution(Set<ParetoSolution> frontExact);
+	
+	/**
+	 * To calculate the hypervolume between two pareto fronts<br>
+	 * The hypervolume is the area between the two fronts which presents the interval of two fronts<br>
+	 * The lower this hypervolume is, the better the performance of this heuristic is.
+	 * 
+	 * @param frontExact pareto front got by an exact algorithm
+	 * @return the hypervolume between two fronts
+	 */
+	public double getHyperVolume(Set<ParetoSolution> frontExact);
 }
