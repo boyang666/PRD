@@ -11,6 +11,7 @@ import fr.polytechtours.prd.multiagent.model.ParetoSolution;
  * <ul>
  * <li>Percentage of optimal solutions found</li>
  * <li>Mean distance between two pareto fronts</li>
+ * <li>Hypervolume</li>
  * </ul>
  * 
  * @author Boyang Wang
