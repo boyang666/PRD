@@ -24,7 +24,7 @@ public class TestExact {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args){
-		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-20-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
+		HashMap<String, Object> hashmap = Commun.ReadDataFromFile("instance-80-2-3-40.data", Job.TYPE_FACTOR_SORT_MAX);
 		Data data = new Data();
 		data.jobs.addAll((ArrayList<Job>) hashmap.get("jobs"));
 		data.machine = (Machine)hashmap.get("machine");
